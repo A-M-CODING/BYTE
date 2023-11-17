@@ -2,6 +2,8 @@ import streamlit as st
 import hashlib
 import weaviate
 import os
+import cohere
+import chat
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -117,6 +119,7 @@ def show_auth_screen():
 def show_chat_screen():
     st.subheader("Chat with BYTE")
     # Placeholder for chat  this is just to give an idea but the connectors is the part where i intend to connect the server
+    chat.run_chatbot()
 
 
 # Function to display document upload screen
