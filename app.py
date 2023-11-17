@@ -119,7 +119,7 @@ def show_auth_screen():
 def show_chat_screen():
     st.subheader("Chat with BYTE")
     # Placeholder for chat  this is just to give an idea but the connectors is the part where i intend to connect the server
-    chat.run_chatbot()
+    chat.main()
 
 
 # Function to display document upload screen
