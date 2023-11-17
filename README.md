@@ -1,2 +1,2 @@
-# BYTE
-Nutritionist in your pocket
+# BYTE 🍏:
+BYTE - Nutritionist in your pocket
