@@ -49,9 +49,10 @@ def create_health_info_form():
                 "Purpose of Using App": app_purpose + ([app_purpose_other] if app_purpose_other else [])
             }
             
-            
-            responses_string = json.dumps(form_responses)  # Convert to JSON string
-        
+            # Construct the responses_string
+            responses_string = ", ".join(f"{key}: '{value}'" if isinstance(value, str) else f"{key}: {value}"
+                                         for key, value in form_responses.items())
+
             user_id = st.session_state.tenant_name
             if user_id:
                 with st.spinner("Processing form..."):
@@ -63,14 +64,14 @@ def create_health_info_form():
                     object_id = import_responses(data_object, user_id)
                     if object_id:
                         st.success("Form processed and saved successfully!")
-                        # Now you can use object_id to retrieve this data later
+                        # Store the object_id in session state for later retrieval
+                        st.session_state["form_object_id"] = object_id
                     else:
                         st.error("Failed to process the form.")
             else:
                 st.error("Tenant ID is not set. Please login first.")
-        
-show_health_info_form()            
-            
+
+show_health_info_form()
             
             
             
