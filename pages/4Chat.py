@@ -121,8 +121,10 @@ def on_click_callback():
         uploaded_file = None
 
 def submain():
+    user_id = st.session_state.tenant_name  # Retrieve tenant name
 
     initialize_session_state()
+    st.session_state['tenant_name'] = user_id  
     chat_placeholder = st.container()
     prompt_placeholder = st.form("chat-form")
 
