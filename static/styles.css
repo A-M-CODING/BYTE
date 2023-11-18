@@ -1,0 +1,65 @@
+.chatRow{
+    /* background-color: red; */
+    display: flex;
+    margin: 5px;
+    width: 100%;
+    /* color: rgb(228, 217, 217); */
+    
+}
+
+.rowReverse{
+    flex-direction: row-reverse;
+}
+
+
+.chatBubble{
+
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    border: 1px solid transparent;
+    padding: 5px 10px;
+    margin: 0px 7px;
+    max-width: 70%;
+
+
+}
+
+.adminBubble
+{
+
+    background: rgb(240, 242, 246);
+    border-radius: 10px;
+
+}
+
+.humanBubble{
+    /* background-color: #0066FF; */
+    color: #1B1B20;
+    border-radius: 20px;
+}
+
+.chatIcon{
+    border-radius: 5px;
+}
+
+
+.stTextInput input[type="text"] {
+    border: 2px solid #0072B5; /* Change the border color */
+    border-radius: 10px; /* Add some border radius for rounded corners */
+    padding: 10px; /* Add some padding */
+    font-size: 16px; /* Change the font size */
+    width: 100%; /* Make the input field full width */
+    background-color: #F8F8F8; /* Add a light background color */
+}
+
+.stFormSubmitButton button[type="submit"] {
+    background-color: #0072B5; /* Change the background color */
+    color: white; /* Change the text color */
+    border: 2px solid #0072B5; /* Change the border color */
+    border-radius: 10px; /* Add some border radius for rounded corners */
+    padding: 10px 20px; /* Add some padding */
+    font-size: 16px; /* Change the font size */
+}
+
+.initial-message {
+    opacity: 0.5;
+}
