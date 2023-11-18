@@ -150,20 +150,18 @@ def submain():
 
 
 
-
     with chat_placeholder:
         for chat in st.session_state.chat_history[2:]:
-            if chat["role"] == "User":
-                msg = chat["message"]
-            else:
-                msg = chat["message"]
+            msg = chat["message"]
+            # Use emojis for user and chatbot icons
+            user_icon = "🐞" if chat["role"] == "User" else "🍏"
 
             div = f"""
-            <div class = "chatRow 
-            {'' if chat["role"] == 'Chatbot' else 'rowReverse'}">
-                <img class="chatIcon" src = "./static/{'logo.png' if chat["role"] == 'Chatbot' else 'admin.png'}" width=32 height=32>
-                <div class = "chatBubble {'adminBubble' if chat["role"] == 'Chatbot' else 'humanBubble'}">&#8203; {msg}</div>
-            </div>"""
+            <div class="chatRow {'rowReverse' if chat["role"] == 'User' else ''}">
+                <span class="chatIcon">{user_icon}</span>
+                <div class="chatBubble {'humanBubble' if chat["role"] == 'User' else 'adminBubble'}">{msg}</div>
+            </div>
+            """
             st.markdown(div, unsafe_allow_html=True)
             
     
