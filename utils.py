@@ -18,7 +18,7 @@ import toml
 config = st.secrets["google_credentials"]
 
 # Construct a credentials object from the dictionary
-credentials = service_account.Credentials.from_service_account_info(credentials_dict)
+credentials = service_account.Credentials.from_service_account_info(config)
 
 
 cohereAPIKey = os.getenv("COHERE_API_KEY")
