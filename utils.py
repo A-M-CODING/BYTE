@@ -4,14 +4,13 @@ import requests
 from cohere.responses.classify import Example
 from google.cloud import vision
 import os
-from dotenv import load_dotenv
 import json
 import hashlib
 import weaviate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import UnstructuredAPIFileIOLoader
-
 from google.oauth2 import service_account
+from dotenv import load_dotenv
 load_dotenv()  # load environment variables from .env
 # Retrieve the credentials JSON string
 credentials_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
