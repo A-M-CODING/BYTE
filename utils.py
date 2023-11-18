@@ -216,8 +216,4 @@ def get_info_for_tenant(tenant_name):
         print(f"Error retrieving objects for tenant {tenant_name}: {e}")
         return []
 
-
-
-      tenant=tenant_name  # The tenant to which the object will be added
-    )
     
