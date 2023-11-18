@@ -195,25 +195,30 @@ def get_responses(responses, tenant_id):
     return data_object
 
 def import_responses(data_object, tenant_name):
-    object_id = client.data_object.create(
-      class_name='UserInformation',  # The class to which the object will be added
-      data_object={
-          'user_form': data_object
-      },
-      tenant=tenant_name  # The tenant to which the object will be added
-    )
+    try:
+        response = client.data_object.create(
+            class_name='UserInformation',  
+            data_object=data_object,
+            tenant=tenant_name
+        )
+        # Save the generated ID in the session state
+        st.session_state["form_object_id"] = response
+        return response
+    except Exception as e:
+        print(f"Error storing user form data: {e}")
+        return None
 
     
-def get_info_for_tenant(tenant_name):
+def get_info_for_tenant(tenant_name, object_id):
     try:
-        results = (
-            client.query.get('UserInformation', ['user_form'])
-            .with_tenant(tenant_name)
-            .do()
+        data_object = client.data_object.get_by_id(
+            object_id,
+            class_name='UserInformation',
+            with_tenant=tenant_name
         )
-        return results.get('data', {}).get('Get', {}).get('UserInformation', [])
+        return data_object
     except Exception as e:
-        print(f"Error retrieving objects for tenant {tenant_name}: {e}")
-        return []
+        print(f"Error retrieving user form data: {e}")
+        return None
 
     
