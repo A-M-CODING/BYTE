@@ -6,8 +6,10 @@ Requests==2.31.0
 streamlit==1.28.1
 weaviate_client==4.2b0
 flask
-
-gogle-cloud-vision
+gcloud
 google_oauth2_tool
+
+google-cloud-vision
+
 unstructured
 langchain
