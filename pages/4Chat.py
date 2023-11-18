@@ -24,9 +24,11 @@ if "form_object_id" not in st.session_state:
     st.session_state.form_object_id = ""
 
 user_id = st.session_state.tenant_name  # Retrieve tenant name
+response = st.session_state.form_object_id
+
 if user_id:
     try:
-        form_responses = get_info_for_tenant(user_id)          
+        form_responses = get_info_for_tenant(user_id, response)          
     except Exception as e:
         st.error(f"An error occurred: {e}")
 else:
