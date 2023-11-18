@@ -1,6 +1,6 @@
 import streamlit as st
 import cohere 
-from utils import get_links, detect_text
+from utils import get_links, detect_text, get_info_for_tenant
 from dotenv import load_dotenv
 import os
 load_dotenv()  # loads variables from .env
@@ -8,12 +8,18 @@ load_dotenv()  # loads variables from .env
 cohereAPIKey = os.getenv("COHERE_API_KEY")
 co = cohere.Client(cohereAPIKey)
 
+user_id = st.session_state.tenant_name  # Retrieve tenant name
+if user_id:
+    try:
+        form_responses = get_info_for_tenant(user_id)          
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
+else:
+    st.error("Tenant ID is not set. Please login first.")
+
 def show_chat():
     st.title("BYTE Chatbot (Using cohere chat endpoint & RAG) ")
     st.write("This is a chatbot")
-
-    form_responses = st.session_state.get('form_responses', {})
-
 
 def display_links(links):
     # Sidebar for product links
