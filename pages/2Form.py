@@ -35,7 +35,7 @@ def create_health_info_form():
 
         if submit_button:
             # Encapsulating responses in a dictionary
-            form_responses = {
+            st.session_state["form_responses"] = {
                 "Age": str(age),
                 "Gender": str(gender),
                 "Weight": str(weight),
