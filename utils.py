@@ -60,7 +60,8 @@ def show_user_documents_screen(tenant_id):
             col1, col2 = st.columns([0.9, 0.1])
             with col1:
                 st.text(f"Source: {doc.get('source')}")
-                st.text_area("", value=doc.get('content'), height=100, disabled=True)
+                # Use the index to create a unique key for each text area
+                st.text_area("", value=doc.get('content'), height=100, disabled=True, key=f"doc_{index}")
 
 # Function to create a new tenant in Weaviate
 def create_new_tenant(tenant_name):
