@@ -12,12 +12,14 @@ from langchain.document_loaders import UnstructuredAPIFileIOLoader
 from google.oauth2 import service_account
 from dotenv import load_dotenv
 load_dotenv()  # load environment variables from .env
-# Retrieve the credentials JSON string
-credentials_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
-# Convert the string back to a JSON object
-credentials_dict = json.loads(credentials_json)
+import toml
+
+# Access the credentials
+credentials_dict = config['google_credentials']
+
 # Construct a credentials object from the dictionary
 credentials = service_account.Credentials.from_service_account_info(credentials_dict)
+
 
 cohereAPIKey = os.getenv("COHERE_API_KEY")
 googleSearchID = os.getenv("GOOGLE_SEARCH_ID")
