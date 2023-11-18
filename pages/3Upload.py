@@ -4,8 +4,11 @@ from utils import upload_document, show_user_documents_screen ,batch_import_docu
 def show_upload_screen():
     st.subheader("Upload Your Medical Documents")
     uploaded_file = st.file_uploader("Choose a file", type=['pdf', 'docx', 'txt', 'png', 'jpg', 'jpeg'])
+
+    # Check if 'tenant_name' is in session_state, if not, set a default value
+    user_id = st.session_state.get('tenant_name', None)
+
     if uploaded_file is not None:
-        user_id = st.session_state.tenant_name  # Retrieve tenant name
         if user_id:
             with st.spinner("Processing document..."):
                 try:
@@ -19,6 +22,6 @@ def show_upload_screen():
                     st.error(f"An error occurred: {e}")
         else:
             st.error("Tenant ID is not set. Please login first.")
+
             
 show_upload_screen()
-
