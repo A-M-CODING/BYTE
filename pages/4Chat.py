@@ -7,6 +7,21 @@ load_dotenv()  # loads variables from .env
 
 cohereAPIKey = os.getenv("COHERE_API_KEY")
 co = cohere.Client(cohereAPIKey)
+# Initialize session state variables
+if "initial_message_sent" not in st.session_state:
+    st.session_state.initial_message_sent = False
+
+if "input_value" not in st.session_state:
+    st.session_state.input_value = ""
+
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+if "tenant_name" not in st.session_state:
+    st.session_state.tenant_name = ""
+
+if "form_object_id" not in st.session_state:
+    st.session_state.form_object_id = ""
 
 user_id = st.session_state.tenant_name  # Retrieve tenant name
 if user_id:
@@ -122,14 +137,14 @@ def on_click_callback():
 
 def submain():
     user_id = st.session_state.tenant_name  # Retrieve tenant name
-    response = st.session_state["form_object_id"]
+    response = st.session_state.form_object_id
 
-    initialize_session_state()
     st.session_state['tenant_name'] = user_id  
     st.session_state["form_object_id"] = response
 
     chat_placeholder = st.container()
     prompt_placeholder = st.form("chat-form")
+
 
     with chat_placeholder:
         for chat in st.session_state.chat_history[2:]:
