@@ -195,11 +195,29 @@ def get_responses(responses, tenant_id):
     return data_object
 
 def import_responses(data_object, tenant_name):
-    client.data_object.create(
+    object_id = client.data_object.create(
       class_name='UserInformation',  # The class to which the object will be added
       data_object={
           'user_form': data_object
       },
+      tenant=tenant_name  # The tenant to which the object will be added
+    )
+
+    
+def get_info_for_tenant(tenant_name):
+    try:
+        results = (
+            client.query.get('UserInformation', ['user_form'])
+            .with_tenant(tenant_name)
+            .do()
+        )
+        return results.get('data', {}).get('Get', {}).get('UserInformation', [])
+    except Exception as e:
+        print(f"Error retrieving objects for tenant {tenant_name}: {e}")
+        return []
+
+
+
       tenant=tenant_name  # The tenant to which the object will be added
     )
     
