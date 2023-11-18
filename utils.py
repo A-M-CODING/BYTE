@@ -215,7 +215,7 @@ def get_info_for_tenant(tenant_name, object_id):
         data_object = client.data_object.get_by_id(
             object_id,
             class_name='UserInformation',
-            with_tenant=tenant_name
+            tenant=tenant_name
         )
         return data_object
     except Exception as e:
