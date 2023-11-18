@@ -185,3 +185,21 @@ def get_links(nutr_label, user_info):
 
   return links_array
 
+
+def get_responses(responses, tenant_id):
+    data_object = {
+            "user_form": responses,
+            "source": "User's Form",
+            "tenant": tenant_id
+        }
+    return data_object
+
+def import_responses(data_object, tenant_name):
+    client.data_object.create(
+      class_name='UserInformation',  # The class to which the object will be added
+      data_object={
+          'user_form': data_object
+      },
+      tenant=tenant_name  # The tenant to which the object will be added
+    )
+    
