@@ -148,21 +148,26 @@ def submain():
     prompt_placeholder = st.form("chat-form")
 
 
+
+
+    # Get the base64 version of your images
+    chatbot_image_base64 = get_base64_encoded_image('static/logo.png')
+    user_image_base64 = get_base64_encoded_image('static/admin.png')
+
     with chat_placeholder:
         for chat in st.session_state.chat_history[2:]:
-            if chat["role"] == "User":
-                msg = chat["message"]
-            else:
-                msg = chat["message"]
-
+            msg = chat["message"]
+            img_base64 = chatbot_image_base64 if chat["role"] == 'Chatbot' else user_image_base64
+            # Use the base64 strings directly in the img src
             div = f"""
-            <div class = "chatRow 
-            {'' if chat["role"] == 'Chatbot' else 'rowReverse'}">
-                <img class="chatIcon" src = "./static/{'logo.png' if chat["role"] == 'Chatbot' else 'admin.png'}" width=32 height=32>
-                <div class = "chatBubble {'adminBubble' if chat["role"] == 'Chatbot' else 'humanBubble'}">&#8203; {msg}</div>
-            </div>"""
+            <div class="chatRow {'rowReverse' if chat["role"] == 'User' else ''}">
+                <img class="chatIcon" src="data:image/png;base64,{img_base64}" width="32" height="32">
+                <div class="chatBubble {'humanBubble' if chat["role"] == 'User' else 'adminBubble'}">{msg}</div>
+            </div>
+            """
             st.markdown(div, unsafe_allow_html=True)
             
+    
     
     with st.form(key="chat_form"):
         cols = st.columns((5, 1, 3))  # Add another column for the button
