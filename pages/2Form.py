@@ -36,7 +36,7 @@ def create_health_info_form():
 
         if submit_button:
             # Encapsulating responses in a dictionary
-            st.session_state["form_responses"] = {
+            form_responses = {
                 "Age": str(age),
                 "Gender": str(gender),
                 "Weight": str(weight),
@@ -49,22 +49,23 @@ def create_health_info_form():
                 "Purpose of Using App": app_purpose + ([app_purpose_other] if app_purpose_other else [])
             }
             
-            # Convert the dictionary to a string format
-            responses_string = ", ".join(f"{key}:{value}" if isinstance(value, (list, int)) else f"'{key}':'{value}'"
-                                        for key, value in form_responses.items())
             
-            print(responses_string)
-    
-            user_id = st.session_state.tenant_name  # Retrieve tenant name
+            responses_string = json.dumps(form_responses)  # Convert to JSON string
+        
+            user_id = st.session_state.tenant_name
             if user_id:
                 with st.spinner("Processing form..."):
-                    try:
-                        data_object = get_responses(responses_string, user_id)
-                        import_responses(data_object, user_id)
+                    data_object = {
+                        "user_form": responses_string,
+                        "source": "User's Form",
+                        "tenant": user_id
+                    }
+                    object_id = import_responses(data_object, user_id)
+                    if object_id:
                         st.success("Form processed and saved successfully!")
-    
-                    except Exception as e:
-                        st.error(f"An error occurred: {e}")
+                        # Now you can use object_id to retrieve this data later
+                    else:
+                        st.error("Failed to process the form.")
             else:
                 st.error("Tenant ID is not set. Please login first.")
         
