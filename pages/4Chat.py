@@ -122,9 +122,12 @@ def on_click_callback():
 
 def submain():
     user_id = st.session_state.tenant_name  # Retrieve tenant name
+    response = st.session_state["form_object_id"]
 
     initialize_session_state()
     st.session_state['tenant_name'] = user_id  
+    st.session_state["form_object_id"] = response
+
     chat_placeholder = st.container()
     prompt_placeholder = st.form("chat-form")
 
