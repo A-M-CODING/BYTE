@@ -1,6 +1,6 @@
 import streamlit as st
 import cohere 
-from utils import get_links, detect_text, get_info_for_tenant
+from utils import get_links, detect_text, get_info_for_tenant, set_tenant_in_flask
 from dotenv import load_dotenv
 import os
 load_dotenv()  # loads variables from .env
