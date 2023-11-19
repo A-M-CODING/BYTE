@@ -124,7 +124,6 @@ def on_click_callback():
                 prompt_truncation = 'auto',
                 #stream=True,
             ) 
-        print(user_documents)
         llm_response_documents = llm_response.documents 
         all_links = extract_links(llm_response_documents)
         formatted_response = f"{llm_response.text}\n\nCitations:\n{all_links}"     
