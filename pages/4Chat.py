@@ -113,9 +113,9 @@ def on_click_callback():
 
         with st.spinner('Generating response...'):  
 
-            llm_response = co.chat( 
+            llm_response, user_documents = co.chat( 
                 message=customer_prompt,
-                connectors=[{"id": "web-search"}],
+                connectors=[{"id": "web-search"}, {"id": "byteapp-7cm5rh"}],
                 documents=[],
                 model='command',
                 temperature=0.5,
@@ -124,7 +124,7 @@ def on_click_callback():
                 prompt_truncation = 'auto',
                 #stream=True,
             ) 
-
+        print(user_documents)
         llm_response_documents = llm_response.documents 
         all_links = extract_links(llm_response_documents)
         formatted_response = f"{llm_response.text}\n\nCitations:\n{all_links}"     
