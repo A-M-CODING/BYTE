@@ -7,15 +7,6 @@ load_dotenv()  # loads variables from .env
 
 cohereAPIKey = os.getenv("COHERE_API_KEY")
 co = cohere.Client(cohereAPIKey)
-# Initialize session state variables
-if "initial_message_sent" not in st.session_state:
-    st.session_state.initial_message_sent = False
-
-if "input_value" not in st.session_state:
-    st.session_state.input_value = ""
-
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
 
 if "tenant_name" not in st.session_state:
     st.session_state.tenant_name = ""
@@ -23,12 +14,17 @@ if "tenant_name" not in st.session_state:
 if "form_object_id" not in st.session_state:
     st.session_state.form_object_id = ""
 
+
 user_id = st.session_state.tenant_name  # Retrieve tenant name
 response = st.session_state.form_object_id
 
+#st.session_state['tenant_name'] = user_id  
+#st.session_state["form_object_id"] = response
+
 if user_id:
     try:
-        form_responses = get_info_for_tenant(user_id, response)          
+        form_responses = get_info_for_tenant(user_id, response)
+        print(form_responses)          
     except Exception as e:
         st.error(f"An error occurred: {e}")
 else:
@@ -104,7 +100,7 @@ def on_click_callback():
             extracted_text = detect_text(uploaded_file)
             if extracted_text:
                 # Set the extracted text as the customer prompt
-                customer_prompt = extracted_text
+                customer_prompt += extracted_text
                 nutr_label = True
             else:
                 st.error("No text could be extracted from the image.")
@@ -140,15 +136,9 @@ def on_click_callback():
         uploaded_file = None
 
 def submain():
-    user_id = st.session_state.tenant_name  # Retrieve tenant name
-    response = st.session_state.form_object_id
-
-    st.session_state['tenant_name'] = user_id  
-    st.session_state["form_object_id"] = response
-
     chat_placeholder = st.container()
     prompt_placeholder = st.form("chat-form")
-
+    initialize_session_state()
 
 
 
