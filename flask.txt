@@ -1,0 +1,78 @@
+# DEPLOYED FLASK APP
+# ENDPOINT FOR TENANT NAME AND COHERE CONNECTOR
+from flask import Flask, request, session, jsonify
+import weaviate
+import cohere
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Replace with your secret key
+
+# Your Weaviate and Cohere credentials
+WEAVIATE_URL = os.getenv("WEAVIATE_ENDPOINT")
+WEAVIATE_API_KEY = os.getenv("WEAVIATE_API_KEY")
+COHERE_API_KEY = os.getenv("COHERE_API_KEY")
+
+client = weaviate.Client(
+    url=WEAVIATE_URL,
+    auth_client_secret=weaviate.AuthApiKey(api_key=WEAVIATE_API_KEY),
+    additional_headers={"X-Cohere-Api-Key": COHERE_API_KEY},
+)
+co = cohere.Client(COHERE_API_KEY)
+
+@app.route('/')
+def hello():
+    return 'Hello, World!'
+
+@app.route('/set_tenant', methods=['POST'])
+def set_tenant():
+    session['tenant_name'] = request.json.get('tenant_name')
+    return jsonify({'message': 'Tenant name set successfully'})
+
+@app.route('/api/query', methods=['POST'])
+def handle_query():
+    # Extract query from request
+    data = request.json
+    query = data.get('query')
+
+    # Check if tenant_name is set, use a default or None if not set
+    tenant_name = session.get('tenant_name', 'default_tenant')
+
+    # Query Weaviate and format results
+    results = query_weaviate(query, tenant_name)
+    formatted_results = format_weaviate_results(results)
+
+    return jsonify({'results': formatted_results}), 200
+
+def format_weaviate_results(results):
+    # Check if results is empty
+    if not results:
+        # Return a formatted empty string or any structure you want
+        return [{'title': '', 'snippet': '', 'personal_form': ''}]
+    else:
+        # Formatting the results
+        return [
+            {
+                'title': result['source'],
+                'snippet': result['content'],
+                'personal_form': result.get('user_form', '')  # Use .get() to avoid KeyError if 'user_form' doesn't exist
+            } for result in results
+        ]
+
+def query_weaviate(query, tenant_name):
+    # Querying Weaviate, assuming tenant_name is used to customize the query
+    result = (
+        client.query
+        .get("UserInformation", ["content", "source", "user_form"])
+        .with_hybrid(query=query, alpha=0.9)
+        .with_limit(3)
+        .with_tenant(tenant_name)
+        .do()
+    )
+    return result['data']['Get']['UserInformation'] if result['data']['Get']['UserInformation'] else []
+    
+if __name__ == '__main__':
+    app.run()
