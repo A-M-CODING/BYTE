@@ -22,9 +22,10 @@ response = st.session_state.form_object_id
 #st.session_state["form_object_id"] = response
 
 if user_id:
+    set_tenant_in_flask(user_id)  # Set tenant name in Flask session
     try:
         form_responses = get_info_for_tenant(user_id, response)
-        print(form_responses)          
+        # ... [Rest of your code]
     except Exception as e:
         st.error(f"An error occurred: {e}")
 else:
