@@ -76,7 +76,7 @@ Weaviate's multi-tenancy is central to providing a personalized and secure exper
 ![image](https://github.com/A-M-CODING/BYTE/assets/86928073/9444de1b-cdb7-4aff-8a57-0b528b174eb9)
 On the BYTE app's SignUp page, both new and existing users manage their access. New users sign up here, and Weaviate's multi-tenancy comes into play by creating a unique ID for each new account. This ID is crafted from their username and a hashed version of their password, ensuring their data stays private.
 
-#### Logging ina s an existing user
+#### Logging in as an existing user
 ![image](https://github.com/A-M-CODING/BYTE/assets/86928073/003a079e-6bf8-4d19-9501-229efc167cbe)
 For returning users, this page serves as a login portal where they can access their account using the unique ID generated during their initial signup. This process ensures that each user's experience and session are kept separate, thanks to Weaviate's multi-tenancy feature. By providing each user with a dedicated data 'tenant,' their information and session state remain isolated and secure, guaranteeing privacy and a personalized experience within the BYTE app.
 
