@@ -77,11 +77,13 @@ def initialize_session_state() :
                     answer my questions related to food and nutrition keeping in mind my health specifications and goals. 
                     If I attached text extracted from my food item's nutrition label, analyse it according to my health data and
                     let me know in if it's good or bad for me, if I should or shouldn't eat it and if I 
-                    can eat it, then specify the quantity to be consumed as well, all according to my
+                    can eat it, then specify the quantity I should consume as well all according to my info, all according to my
                     health information and goals as well as internet sources etc, in a brief and straightforward manner. 
                     Be concise and precise in your answers . Give clear, unambiguous answers. 
                     Your answers should be backed by verified sources from the internet. 
-                    If I ask something unrelated to food and/or nutrition, politely decline. Here is my info: {form_responses}
+                    If I ask something unrelated to food and/or nutrition, politely decline. 
+                    Here is my info: {form_responses} You are to give me personalized keep it according to my condition, history and goals right now 
+                    I also have further information of mine that you can search by generating relavent queries to be searched for whether the food further aligns with detailed history about me.  
                     """
 
         st.session_state.chat_history.append({"role": "User", "message": prompt})
