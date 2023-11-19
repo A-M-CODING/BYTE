@@ -1,0 +1,44 @@
+# ALREADY RAN ONCE TO INITIATE SCHEMA 
+import weaviate
+from dotenv import load_dotenv
+import os
+
+load_dotenv() 
+
+
+WEAVIATE_ENDPOINT = os.getenv("WEAVIATE_ENDPOINT")
+WEAVIATE_API_KEY = os.getenv("WEAVIATE_API_KEY")
+COHERE_API_KEY = os.getenv("COHERE_API_KEY")
+
+auth_config = weaviate.AuthApiKey(api_key=WEAVIATE_API_KEY) 
+# Weaviate client setup
+client = weaviate.Client(
+    url= WEAVIATE_ENDPOINT,  
+    auth_client_secret = auth_config,  
+    additional_headers ={
+        "X-Cohere-Api-Key" : COHERE_API_KEY,
+    }
+)
+
+user_class = {
+    "class": "UserInformation",
+    "properties": [
+        {"name": "content", 
+         "dataType": ["text"]},
+        {"name": "source",
+         "dataType": ["text"]},
+        {"name": "user_form", 
+         "dataType": ["text"]
+        }
+         
+    ],
+    "vectorizer": "text2vec-cohere",
+    "moduleConfig": {
+    "text2vec-cohere": {
+        "model": "embed-english-v3.0",
+    }
+    },
+    "multiTenancyConfig": {"enabled": True}
+}
+
+client.schema.create_class(user_class)
