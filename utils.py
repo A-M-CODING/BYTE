@@ -221,5 +221,16 @@ def get_info_for_tenant(tenant_name, object_id):
     except Exception as e:
         print(f"Error retrieving user form data: {e}")
         return None
-
+ # Function to send tenant_name to Flask app
+def set_tenant_in_flask(tenant_name):
+    url = "https://byteapp-ltle5vf4cq-el.a.run.app/set_tenant"  # Replace with your actual Flask app URL
+    data = {"tenant_name": tenant_name}
+    try:
+        response = requests.post(url, json=data)
+        if response.status_code == 200:
+            st.success("Tenant name set successfully in Flask.")
+        else:
+            st.error(f"Failed to set tenant name in Flask. Status code: {response.status_code}, Response: {response.text}")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Request failed: {e}")
     
