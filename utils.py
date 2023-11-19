@@ -213,7 +213,7 @@ def import_responses(data_object, tenant_name):
 def get_info_for_tenant(tenant_name, object_id):
     try:
         data_object = client.data_object.get_by_id(
-            object_id,
+            uuid = f'{object_id}',
             class_name='UserInformation',
             tenant=tenant_name
         )
