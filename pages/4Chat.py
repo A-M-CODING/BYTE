@@ -113,7 +113,7 @@ def on_click_callback():
 
         with st.spinner('Generating response...'):  
 
-            llm_response, user_documents = co.chat( 
+            llm_response = co.chat( 
                 message=customer_prompt,
                 connectors=[{"id": "web-search"}, {"id": "byteapp-7cm5rh"}],
                 documents=[],
