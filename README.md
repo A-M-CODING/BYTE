@@ -7,6 +7,10 @@ BYTE is an innovative health and nutrition-focused application, combining the po
 ## Link to BYTE:
 https://byte-nutrition.streamlit.app
 
+## Demo Video
+BYTE is a mobile-first app to enable users to conveniently take snaps of food products on the go and get instant personalised advices (e.g: grocery shopping!).
+
+
 ## Functional Aspects
 - Personalized User Experience: Utilizes multi-tenancy for data privacy and personalized user interactions.
 - Health Information Form: Collects user-specific data to tailor recommendations.
