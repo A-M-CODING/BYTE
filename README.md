@@ -1,14 +1,18 @@
 # BYTE 🍏:
 BYTE - Nutritionist in your pocket
 
+
 ## Overview
 BYTE is an innovative health and nutrition-focused application, combining the power of AI and multi-tenancy architecture for a personalized user experience. Utilizing Streamlit for the frontend, Cohere's language models, Weaviate vector database, Flask backend, and the integration of Retrieval-Augmented Generation (RAG), BYTE stands at the forefront of health and nutrition AI applications.
+
 
 ## Link to BYTE:
 https://byte-nutrition.streamlit.app
 
+
 ## Demo Video
 BYTE is a mobile-first app to enable users to conveniently take snaps of food products on the go and get instant personalised advices (e.g: grocery shopping!).
+https://drive.google.com/file/d/1ljkiyQ_qQUc3x6IMS0F1laU0J2nOyV9Z/view?usp=sharing
 
 
 ## Functional Aspects
@@ -19,6 +23,7 @@ BYTE is a mobile-first app to enable users to conveniently take snaps of food pr
 - Connectors to Internet and User Data: Employs connectors to access real-time internet data and user-uploaded documents for comprehensive responses.
 - Hybrid Search: Leverages Weaviate’s hybrid search capability, prioritizing vector search over keyword search for more relevant results.
 
+
 ## Technical Aspects
 - Streamlit for UI: Provides a dynamic and interactive user interface.
 - Weaviate Vector Database: Manages data storage and efficient querying with multi-tenancy support.
@@ -27,6 +32,7 @@ BYTE is a mobile-first app to enable users to conveniently take snaps of food pr
 - Flask Backend: Handles specific backend operations and connects with Cohere's API.
 - Document Processing: Utilizes the unstructured library for effective information extraction.
 - Hybrid Vector and Keyword Search: Integrates Weaviate’s search capabilities for precise query responses.
+
 
 ## Key Features
 - User Signup and Data Isolation: Supports user profiles with secure multi-tenancy.
@@ -38,6 +44,7 @@ BYTE is a mobile-first app to enable users to conveniently take snaps of food pr
 - Responsive and Intuitive UI: Crafted with Streamlit for a seamless user experience.
 - Backend Operations with Flask: Manages backend processes and integrates AI functionalities.
 
+
 ## Technologies Used
 - Streamlit: Frontend interface development.
 - Weaviate: Vector database for data storage and searching.
@@ -47,7 +54,9 @@ BYTE is a mobile-first app to enable users to conveniently take snaps of food pr
 - Python: Primary programming language.
 - Various Python Libraries: Including langchain, cohere, and weaviate_client.
 
+
 ## Getting Started
+
 ### Installation Requirements:
 - Python 3.x
 - Streamlit, Flask, Cohere SDK, Weaviate Client, etc. (refer to requirements.txt)
@@ -60,12 +69,15 @@ BYTE is a mobile-first app to enable users to conveniently take snaps of food pr
 - Start the Streamlit app: streamlit run App.py.
 - Run the Flask server for backend functionalities.
 
+
 ## Detailed Features
+
 ### 1. Landing Page
 
 ![image](https://github.com/A-M-CODING/BYTE/assets/86928073/443c3db8-5456-42e8-87d5-25c71445a1d0)
 
 The BYTE app's main page is a straightforward spot where you find out what the app does and where to go next. It utilises Streamlit's multi-page application feature, which lets us have a neat sidebar that lists all the other pages like SignUp, Form, Upload, and Chat. This page is your starting point and shows you the way to all the app's tools for health and nutrition.
+
 
 ### 2. Sign Up/Log In Page
 
@@ -84,6 +96,7 @@ On the BYTE app's SignUp page, both new and existing users manage their access. 
 ![image](https://github.com/A-M-CODING/BYTE/assets/86928073/003a079e-6bf8-4d19-9501-229efc167cbe)
 For returning users, this page serves as a login portal where they can access their account using the unique ID generated during their initial signup. This process ensures that each user's experience and session are kept separate, thanks to Weaviate's multi-tenancy feature. By providing each user with a dedicated data 'tenant,' their information and session state remain isolated and secure, guaranteeing privacy and a personalized experience within the BYTE app.
 
+
 ### 3. Form Page
 
 ![image](https://github.com/A-M-CODING/BYTE/assets/86928073/5d4169d7-4260-48a7-9245-682759013f9d)
@@ -96,15 +109,17 @@ Behind the scenes, submitting the form triggers the creation of an object ID for
 ![image](https://github.com/A-M-CODING/BYTE/assets/86928073/160a57a7-99e5-456f-8421-a3fea10bf02c)
 ![image](https://github.com/A-M-CODING/BYTE/assets/86928073/2e958f7e-0da7-4dfd-97e7-a0ce06bf97d3)
 
+
 ### 4. File Upload Page
 
 ![image](https://github.com/A-M-CODING/BYTE/assets/86928073/e85cf490-9f2e-40c9-907e-791cfef67a62)
 ![image](https://github.com/A-M-CODING/BYTE/assets/86928073/efd7867d-b187-4349-a632-b03d5d9ca8e5)
 The Upload Documents page in the BYTE app is designed for users to upload various types of medical documents, which can be PDFs, DOCX files, TXT files, and even images like PNGs or JPEGs. This flexibility allows users to even snap a picture of their documents and upload them directly. Once a document is uploaded, the unstructured.io API kicks in to extract content from these files. 
 
-After extraction, this information is stored in the user's dedicated database space within Weaviate using their unique tenant ID, similar to how form data is stored. Each document's contents are then linked to an object ID, which is crucial for retrieval.
+Instead of storing the raw textual content directly in the database, the extracted information is transformed into vector embeddings. These embeddings are then stored in the user's unique space within Weaviate's database. The use of embeddings allows for a more sophisticated and nuanced approach to data retrieval, as it captures the semantic context of the information, rather than just the keywords.
 
-To leverage this stored information, a RAG connector is incorporated into Cohere's co.chat endpoint. This connector enables the chatbot to pull contextually relevant information from the user's documents during conversations. The app emphasizes vector search over keyword search, allowing for more nuanced and context-aware interactions. The hybrid search functionality ensures that even implicit details in the user documents can significantly influence the chatbot's advice and responses, making the user experience seamlessly personalized. This powerful hybrid search is sophisticated enough to infer details like dietary preferences, for example, identifying a user as vegan from the content of their medical reports without them having to explicitly state it.
+The storage of document data as vector embeddings is pivotal for the application's robust search capabilities. When the chatbot is engaged in a conversation, it leverages a RAG connector to query these embeddings via Cohere's co.chat endpoint. This process facilitates the chatbot's ability to provide responses that are grounded in the factual content of the user's documents. This connector enables the chatbot to pull contextually relevant information from the user's documents during conversations. The app utlises hybrid search, emphasizing vector search over keyword search, allowing for more nuanced and context-aware interactions. The hybrid search functionality ensures that even implicit details in the user documents can significantly influence the chatbot's advice and responses, making the user experience seamlessly personalized. This powerful hybrid search is sophisticated enough to infer details like dietary preferences, for example, identifying a user as vegan from the content of their medical reports without them having to explicitly state it.
+
 
 ### 5. Chat Page
 
@@ -134,6 +149,7 @@ Moreover, Cohere's co.chat endpoint's search query generator mode is utilized to
 
 #### Healthier Alternate Product Links
 ![image](https://github.com/A-M-CODING/BYTE/assets/86928073/abf245f1-6269-4c5c-b14b-b4172ea7b45c)
+
 
 ## Contributing
 Contributions to enhance BYTE or introduce new features are welcome. Please fork the repository, make your changes, and submit a pull request for review.
