@@ -3,6 +3,7 @@ from utils import hash_password, create_new_tenant, verify_tenant
 
 def show_signup():
     st.subheader("Personalize 🍏")
+    st.write("In case you encounter an error: Please click the signup button again or refresh the page")
     username = st.text_input("Username")
     password = st.text_input("Password", type='password')
     if st.button("SignUp"):
