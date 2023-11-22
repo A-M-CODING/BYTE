@@ -28,7 +28,7 @@ col1, col2 = st.columns([2, 1])
 
 with col1:
     st.markdown("""
-        **Discover a Healthier You!**
+        ## Discover a Healthier You!
         
         At BYTE, we're passionate about helping you achieve your health and fitness goals.
         - 🥗 **Personalized Diet Plans**
