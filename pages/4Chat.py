@@ -20,7 +20,7 @@ response = st.session_state.form_object_id
 
 #st.session_state['tenant_name'] = user_id  
 #st.session_state["form_object_id"] = response
-
+"""
 if user_id:
     set_tenant_in_flask(user_id)  # Set tenant name in Flask session
     try:
@@ -30,7 +30,7 @@ if user_id:
         st.error(f"An error occurred: {e}")
 else:
     st.error("Tenant ID is not set. Please login first.")
-
+"""
 def show_chat():
     st.title("BYTE Chatbot (Using cohere chat endpoint & RAG) ")
     st.write("This is a chatbot")
@@ -115,7 +115,7 @@ def on_click_callback():
 
             llm_response = co.chat( 
                 message=customer_prompt,
-                connectors=[{"id": "web-search"}, {"id": "byteapp-7cm5rh"}],
+                connectors=[{"id": "web-search"}],
                 documents=[],
                 model='command',
                 temperature=0.5,
