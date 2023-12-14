@@ -20,17 +20,16 @@ response = st.session_state.form_object_id
 
 #st.session_state['tenant_name'] = user_id  
 #st.session_state["form_object_id"] = response
-"""
+
 if user_id:
-    set_tenant_in_flask(user_id)  # Set tenant name in Flask session
+    #set_tenant_in_flask(user_id)  # Set tenant name in Flask session
     try:
         form_responses = get_info_for_tenant(user_id, response)
-        # ... [Rest of your code]
     except Exception as e:
         st.error(f"An error occurred: {e}")
 else:
     st.error("Tenant ID is not set. Please login first.")
-"""
+
 def show_chat():
     st.title("BYTE Chatbot (Using cohere chat endpoint & RAG) ")
     st.write("This is a chatbot")
