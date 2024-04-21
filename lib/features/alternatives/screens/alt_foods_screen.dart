@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../app_theme.dart';
 import '../models/product.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'get_prods_vids.dart';
+import '../controllers/firestore_service.dart';
+import 'package:provider/provider.dart';
+import 'package:byte_app/features/authentication/controllers/set_provider.dart';
 
 class AltProductListingWidget extends StatefulWidget {
   final List<AltProduct> altProducts;
@@ -31,9 +33,13 @@ class _AltProductListingWidgetState extends State<AltProductListingWidget> {
   bool isSearchStarted = false;
   List<AltProduct> searchedAltProducts = [];
 
+  late FirestoreService firestoreService; // Use 'late' for lazy initialization
+
   @override
   void initState() {
     super.initState();
+    firestoreService =
+        FirestoreService(); // This will initialize the field before it's used.
     textController = TextEditingController();
   }
 
@@ -54,6 +60,7 @@ class _AltProductListingWidgetState extends State<AltProductListingWidget> {
 
   @override
   Widget build(BuildContext context) {
+    String? userId = Provider.of<UserProvider>(context, listen: false).userId;
     double screenWidth = MediaQuery.of(context).size.width;
     double itemWidth = (screenWidth - 40) / 2; // Account for padding
     double itemHeight = 200; // Adjust as needed
@@ -282,8 +289,18 @@ class _AltProductListingWidgetState extends State<AltProductListingWidget> {
                           top: 4,
                           child: IconButton(
                             icon: Icon(Icons.favorite_border, size: 24),
-                            onPressed: () {
-                              // Placeholder for your functionality
+                            onPressed: () async {
+                              var isFavorite = !altProduct.isFavorite;
+                              setState(() {
+                                altProduct.isFavorite = isFavorite;
+                              });
+                              if (isFavorite) {
+                                await firestoreService.addUserFavorite(
+                                    userId, altProduct);
+                              } else {
+                                await firestoreService.removeUserFavorite(
+                                    userId, altProduct);
+                              }
                             },
                           ),
                         ),

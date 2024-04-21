@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:provider/provider.dart';
 import 'package:byte_app/data/services/authentication_service.dart';
+import 'package:byte_app/features/authentication/controllers/set_provider.dart';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -112,8 +113,13 @@ class LoginScreen extends StatelessWidget {
 
                               // Check if the result is a user ID (indicating success) rather than an error message
                               if (result != null && result.isNotEmpty) {
+                                String userId = result;
                                 // Assuming the result being not null and having a content means it's a user ID
                                 print('Login successful: User ID is $result');
+
+                                Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .setUserId(userId);
 
                                 // Navigate to DashboardScreen on successful login
                                 Navigator.of(context)

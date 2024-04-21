@@ -9,13 +9,19 @@ import 'features/authentication/screens/signup_screen.dart';
 import 'features/alternatives/screens/alt_foods_screen.dart';
 import 'features/alternatives/screens/get_prods_vids.dart';
 import 'features/alternatives/models/product.dart';
+import 'features/authentication/controllers/set_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform, // Use the Firebase options
   );
-  runApp(const ByteApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: const ByteApp(),
+    ),
+  );
 }
 
 class ByteApp extends StatelessWidget {
@@ -28,7 +34,6 @@ class ByteApp extends StatelessWidget {
         Provider<AuthenticationService>(
           create: (_) => AuthenticationService(),
         ),
-        // Add more providers if necessary
       ],
       child: MaterialApp(
         title: 'BYTE Health & Nutrition',
