@@ -1,8 +1,6 @@
-# byte_app
+# BYTE
 
-A new Flutter project.
-
-## Getting Started
+Nutritionist in your pocket 2.0
 
 This project is a starting point for a Flutter application.
 
