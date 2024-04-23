@@ -26,13 +26,13 @@ class _TextPostScreenState extends State<TextPostScreen> {
       var currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
         // Get the user ID of the currently logged-in user
-        String userId = currentUser.uid;
+        String username = currentUser.email!.split('@').first;
 
         // Save the post to Firestore
         FirebaseFirestore.instance.collection('posts').add({
           'title': _titleController.text,
           'content': _contentController.text,
-          'userId': userId, // Save user ID along with other post data
+          'userId': username, // Save user ID along with other post data
           'timestamp': FieldValue.serverTimestamp(), // Automatically set the server timestamp
           'type': 'text', // Specify the type of post
           'likes': [],  // Initialize likes count

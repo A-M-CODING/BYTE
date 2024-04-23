@@ -5,7 +5,6 @@ import 'package:byte_app/features/community/models/post_model.dart';
 import 'package:byte_app/features/community/widgets/post_widget.dart';
 import 'package:byte_app/features/community/services/post_service.dart';
 import 'package:byte_app/features/community/screens/comment_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class FeedScreen extends StatefulWidget {
   @override

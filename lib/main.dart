@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'firebase_options.dart'; // Make sure this import is correct
-import 'data/services/authentication_service.dart';
-import 'features/home/screens/home_page.dart';
+import 'package:byte_app/firebase_options.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:byte_app/data/services/authentication_service.dart';
+import 'package:byte_app/features/home/screens/home_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:byte_app/localization/locale_provider.dart'; // Make sure to import locale_provider.dart
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, // Use the Firebase options
+    options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const ByteApp());
 }
 
@@ -23,16 +27,30 @@ class ByteApp extends StatelessWidget {
         Provider<AuthenticationService>(
           create: (_) => AuthenticationService(),
         ),
-        // Add more providers if necessary
+        ChangeNotifierProvider(create: (context) => LocaleProvider()), // Add LocaleProvider
       ],
-      child: MaterialApp(
-        title: 'BYTE Health & Nutrition',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          useMaterial3: true,
-        ),
-        debugShowCheckedModeBanner: false,
-        home: const HomePage(),
+      child: Builder(
+        builder: (context) {
+          // Get the locale from LocaleProvider
+          final provider = Provider.of<LocaleProvider>(context);
+          return MaterialApp(
+            title: 'BYTE Health & Nutrition',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+              useMaterial3: true,
+            ),
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: provider.locale, // Use the locale from LocaleProvider
+            home: const HomePage(),
+          );
+        },
       ),
     );
   }

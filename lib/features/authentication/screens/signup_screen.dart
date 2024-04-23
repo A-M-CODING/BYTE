@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:byte_app/data/services/authentication_service.dart';
 
 class SignupScreen extends StatelessWidget {
@@ -12,6 +13,10 @@ class SignupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    if (localizations == null) {
+      return CircularProgressIndicator();
+    }
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
@@ -34,7 +39,7 @@ class SignupScreen extends StatelessWidget {
               FadeInUp(
                 duration: const Duration(milliseconds: 1000),
                 child: Text(
-                  "Sign up",
+                  localizations.signUp, // Localized
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -42,21 +47,21 @@ class SignupScreen extends StatelessWidget {
               FadeInUp(
                 duration: const Duration(milliseconds: 1200),
                 child: Text(
-                  "Create an account, It's free",
+                  localizations.signUpFree, // Localized
                   style: TextStyle(fontSize: 15, color: Colors.grey[700]),
                 ),
               ),
               FadeInUp(
                 duration: const Duration(milliseconds: 1200),
-                child: makeInput(label: "Email", controller: _emailController),
+                child: makeInput(label: localizations.email, controller: _emailController), // Localized
               ),
               FadeInUp(
                 duration: const Duration(milliseconds: 1300),
-                child: makeInput(label: "Password", obscureText: true, controller: _passwordController),
+                child: makeInput(label: localizations.password, obscureText: true, controller: _passwordController), // Localized
               ),
               FadeInUp(
                 duration: const Duration(milliseconds: 1400),
-                child: makeInput(label: "Confirm Password", obscureText: true, controller: _confirmPasswordController),
+                child: makeInput(label: localizations.confirmPassword, obscureText: true, controller: _confirmPasswordController), // Localized
               ),
               FadeInUp(
                 duration: const Duration(milliseconds: 1500),
@@ -81,14 +86,14 @@ class SignupScreen extends StatelessWidget {
 
                       if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Please fill in all fields")),
+                          SnackBar(content: Text(localizations.fieldRequired)), // Localized
                         );
                         return;
                       }
 
                       if (password != confirmPassword) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Passwords do not match")),
+                          SnackBar(content: Text(localizations.passwordsDoNotMatch)), // Localized
                         );
                         return;
                       }
@@ -111,8 +116,8 @@ class SignupScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    child: const Text(
-                      "Sign up",
+                    child: Text(
+                      localizations.signUpButtonText, // Localized
                       style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                     ),
                   ),
@@ -123,13 +128,13 @@ class SignupScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    const Text("Already have an account?"),
+                    Text(localizations.alreadyHaveAccount), // Localized
                     TextButton(
                       onPressed: () {
                         // TODO: Navigate to the login screen
                       },
-                      child: const Text(
-                        "Login",
+                      child: Text(
+                        localizations.loginButtonText, // Localized
                         style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                       ),
                     ),
@@ -143,7 +148,7 @@ class SignupScreen extends StatelessWidget {
     );
   }
 
-  Widget makeInput({required String label, required TextEditingController controller, bool obscureText = false}) {
+  Widget makeInput({required String label, bool obscureText = false, required TextEditingController controller}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[

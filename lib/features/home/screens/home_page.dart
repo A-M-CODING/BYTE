@@ -1,15 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Ensure this import is correct
 import '../../authentication/screens/login_screen.dart';
 import '../../authentication/screens/signup_screen.dart';
-
+import 'package:byte_app/localization/locale_provider.dart'; // Ensure this is the correct path for your LocaleProvider
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    if (localizations == null) {
+      return CircularProgressIndicator();
+    }
+
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(Icons.language),
+            onPressed: () {
+              Locale newLocale = Localizations.localeOf(context) == Locale('en') ? Locale('ur') : Locale('en');
+              Provider.of<LocaleProvider>(context, listen: false).setLocale(newLocale);
+            },
+          )
+        ],
+      ),
       body: SafeArea(
         child: Container(
           width: double.infinity,
@@ -24,7 +42,7 @@ class HomePage extends StatelessWidget {
                   FadeInUp(
                     duration: Duration(milliseconds: 1000),
                     child: Text(
-                      "Welcome",
+                      localizations.welcome, // Localized
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
@@ -35,7 +53,7 @@ class HomePage extends StatelessWidget {
                   FadeInUp(
                     duration: Duration(milliseconds: 1200),
                     child: Text(
-                      "Automatic identity verification which enables you to verify your identity",
+                      localizations.verifyIdentity, // Localized
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.grey[700],
@@ -74,7 +92,7 @@ class HomePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: Text(
-                        "Login",
+                        localizations.login, // Localized
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
@@ -109,7 +127,7 @@ class HomePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: Text(
-                          "Sign up",
+                          localizations.signUp, // Localized
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 18,

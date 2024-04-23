@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 class PollWidget extends StatefulWidget {
+  final String postId;
   final String question;
   final Map<String, int> votes;
   final List<String> options;
@@ -9,6 +10,7 @@ class PollWidget extends StatefulWidget {
 
   const PollWidget({
     Key? key,
+    required this.postId,
     required this.question,
     required this.votes,
     required this.options,

@@ -42,11 +42,13 @@ class _ImagePostScreenState extends State<ImagePostScreen> {
           await ref.putFile(File(_image!.path));
           final url = await ref.getDownloadURL();
 
+          String username = currentUser.email!.split('@').first;
+
           // Save post details in Firestore
           FirebaseFirestore.instance.collection('posts').add({
             'description': _descriptionController.text,
             'imageUrl': url,
-            'userId': currentUser.uid,
+            'userId': username,
             'timestamp': FieldValue.serverTimestamp(),
             'type': 'image',
             'likes': [],  // Initialize likes count

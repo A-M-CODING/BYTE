@@ -59,11 +59,12 @@ class _PollPostScreenState extends State<PollPostScreen> {
       if (currentUser != null) {
         // Remove empty options and filter out duplicates
         var uniqueOptions = options.where((option) => option.isNotEmpty).toSet().toList();
+        String username = currentUser.email!.split('@').first;
 
         FirebaseFirestore.instance.collection('posts').add({
           'question': _questionController.text,
           'options': uniqueOptions,
-          'userId': currentUser.uid,
+          'userId':username,
           'timestamp': FieldValue.serverTimestamp(),
           'type': 'poll',
           'likes': [],  // Initialize likes count

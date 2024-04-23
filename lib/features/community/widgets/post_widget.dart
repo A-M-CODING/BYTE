@@ -103,6 +103,7 @@ class _PostWidgetState extends State<PostWidget> {
           ],
           if (isPollPost) ...[
             PollWidget(
+              postId: widget.post.id,
               question: widget.post.question,
               votes: widget.post.votes,
               options: widget.post.options,
