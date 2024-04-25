@@ -41,7 +41,10 @@ dependencies:
   file_picker: ^8.0.0+1
   path_provider: ^2.1.3
   permission_handler: ^11.3.1
+<<<<<<< HEAD
   pdf_text: ^0.5.0
+=======
+>>>>>>> fe279d9 (Updated community features)
   google_sign_in: ^6.2.1
   shared_preferences: ^2.2.3
   flutter_rating_bar: ^4.0.1
@@ -81,10 +84,16 @@ flutter:
   assets:
     - assets/images/background.png
     - assets/images/illustration.png
+<<<<<<< HEAD
     - assets/images/avatars/men.jpg
     - assets/images/avatars/men2.jpg
     - assets/images/avatars/women.jpg
     - assets/images/avatars/women2.jpg
+=======
+    - assets/images/fruits/
+    - assets/images/default_profile.png
+    - assets/images/
+>>>>>>> fe279d9 (Updated community features)
 flutter_intl:
   enabled: true
   # Specify the location of your ARB files

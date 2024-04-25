@@ -5,7 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:byte_app/features/form/model/health_form_field.dart';
 import 'package:byte_app/features/form/model/form_widgets.dart';
 import 'package:file_picker/file_picker.dart';
+<<<<<<< HEAD
 import 'package:byte_app/features/profile/screens/profile_page.dart';
+=======
+import 'package:byte_app/features/community/screens/homedecider.dart';
+>>>>>>> fe279d9 (Updated community features)
 
 
 class HealthInformationForm extends StatefulWidget {
@@ -46,7 +50,11 @@ class HealthInformationFormState extends State<HealthInformationForm> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
+<<<<<<< HEAD
           builder: (context) => ProfilePage(), // Or another page if the form is already filled
+=======
+          builder: (context) => HomeDecider(), // Or another page if the form is already filled
+>>>>>>> fe279d9 (Updated community features)
         ),
       );
     }
@@ -253,13 +261,20 @@ class HealthInformationFormState extends State<HealthInformationForm> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
+<<<<<<< HEAD
       // Combine the selected allergies with any additional ones entered by the user
+=======
+      // Collect combined allergies and diseases
+>>>>>>> fe279d9 (Updated community features)
       List<String> combinedAllergies = List.from(selectedAllergies);
       if (otherAllergiesController.text.trim().isNotEmpty) {
         combinedAllergies.add(otherAllergiesController.text.trim());
       }
 
+<<<<<<< HEAD
       // Combine the selected diseases with any additional ones entered by the user
+=======
+>>>>>>> fe279d9 (Updated community features)
       List<String> combinedDiseases = List.from(selectedDiseases);
       if (otherDiseasesController.text.trim().isNotEmpty) {
         combinedDiseases.add(otherDiseasesController.text.trim());
@@ -269,12 +284,21 @@ class HealthInformationFormState extends State<HealthInformationForm> {
         'age': int.parse(ageController.text),
         'gender': gender,
         'height': int.parse(heightController.text),
+<<<<<<< HEAD
         'allergies': List.from(selectedAllergies)..addAll(otherAllergiesController.text.trim().split(',')),
         'diseases': List.from(selectedDiseases)..addAll(otherDiseasesController.text.trim().split(',')),
         'healthGoals': selectedHealthGoals,
         'activityLevel': activityLevel,
         'dietaryPreferences': selectedDietaryPreferences,
         'religiousDietaryRestrictions': selectedReligiousRestrictions, // Add this line
+=======
+        'allergies': combinedAllergies,
+        'diseases': combinedDiseases,
+        'healthGoals': selectedHealthGoals,
+        'activityLevel': activityLevel,
+        'dietaryPreferences': selectedDietaryPreferences,
+        'religiousDietaryRestrictions': selectedReligiousRestrictions,
+>>>>>>> fe279d9 (Updated community features)
         'appPurpose': selectedAppPurpose,
         'additionalInfo': additionalInfoController.text,
         'formFilled': true,
@@ -288,11 +312,19 @@ class HealthInformationFormState extends State<HealthInformationForm> {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.formSubmitSuccess))
         );
+<<<<<<< HEAD
         // Navigate to the ProfilePage after successful submission
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => ProfilePage(),
+=======
+        // Navigate to HomeDecider instead of ProfilePage
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeDecider(),
+>>>>>>> fe279d9 (Updated community features)
           ),
         );
       })

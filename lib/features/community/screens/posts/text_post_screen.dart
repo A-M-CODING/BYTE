@@ -21,6 +21,7 @@ class _TextPostScreenState extends State<TextPostScreen> {
     super.dispose();
   }
 
+<<<<<<< HEAD
   void _submitPost() {
     if (_formKey.currentState!.validate()) {
       var currentUser = FirebaseAuth.instance.currentUser;
@@ -37,6 +38,34 @@ class _TextPostScreenState extends State<TextPostScreen> {
           'type': 'text', // Specify the type of post
           'likes': [],  // Initialize likes count
           'comments': []  // Initialize comments array
+=======
+  void _submitPost() async {
+    if (_formKey.currentState!.validate()) {
+      var currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        String userId = currentUser.uid;
+
+        // Fetch the profile image URL from the 'profiles' collection
+        String profileImageUrl = await FirebaseFirestore.instance
+            .collection('profiles')
+            .doc(userId)
+            .get()
+            .then((doc) => doc.data()?['profileImage'] ?? 'assets/images/default_profile.png');
+
+        // Get the user ID and username of the currently logged-in user
+        String username = currentUser.email!.split('@').first;
+
+        // Save the post to Firestore, now including the profileImageUrl
+        FirebaseFirestore.instance.collection('posts').add({
+          'title': _titleController.text,
+          'content': _contentController.text,
+          'userId': username,
+          'userProfileImage': profileImageUrl, // Add this line
+          'timestamp': FieldValue.serverTimestamp(),
+          'type': 'text',
+          'likes': [],
+          'commentsCount': 0,
+>>>>>>> fe279d9 (Updated community features)
         }).then((result) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Post created successfully!')));
           Navigator.pop(context);
@@ -49,6 +78,10 @@ class _TextPostScreenState extends State<TextPostScreen> {
     }
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> fe279d9 (Updated community features)
   @override
   Widget build(BuildContext context) {
     return Scaffold(

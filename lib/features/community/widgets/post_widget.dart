@@ -12,6 +12,10 @@ class PostWidget extends StatefulWidget {
   final Function(String, String) onVote;
   final VoidCallback onComment;
   final VoidCallback onLike;
+<<<<<<< HEAD
+=======
+  final String profileImage;
+>>>>>>> fe279d9 (Updated community features)
 
   const PostWidget({
     Key? key,
@@ -19,6 +23,10 @@ class PostWidget extends StatefulWidget {
     required this.onVote,
     required this.onComment,
     required this.onLike,
+<<<<<<< HEAD
+=======
+    required this.profileImage,
+>>>>>>> fe279d9 (Updated community features)
   }) : super(key: key);
 
   @override
@@ -60,6 +68,18 @@ class _PostWidgetState extends State<PostWidget> {
     bool isImagePost = widget.post.imageUrl.isNotEmpty;
     bool isPollPost = widget.post.options.isNotEmpty;
     bool isTextPost = !isImagePost && !isPollPost;
+<<<<<<< HEAD
+=======
+    bool isNetworkImage = widget.profileImage.startsWith('http') ||
+        widget.profileImage.startsWith('https');
+    ImageProvider imageProvider;
+
+    if (isNetworkImage) {
+      imageProvider = NetworkImage(widget.profileImage);
+    } else {
+      imageProvider = AssetImage(widget.profileImage);
+    }
+>>>>>>> fe279d9 (Updated community features)
 
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -67,7 +87,11 @@ class _PostWidgetState extends State<PostWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ListTile(
+<<<<<<< HEAD
             leading: CircleAvatar(), // Placeholder for user avatar
+=======
+            leading: CircleAvatar( backgroundImage: imageProvider), // Placeholder for user avatar
+>>>>>>> fe279d9 (Updated community features)
             title: Text(widget.post.userId, style: TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Text(getFormattedTime(widget.post.timestamp)),
             isThreeLine: isImagePost, // Extra space for the image description
@@ -125,7 +149,11 @@ class _PostWidgetState extends State<PostWidget> {
                   icon: Icon(Icons.comment),
                   onPressed: widget.onComment,
                 ),
+<<<<<<< HEAD
                 Text('View all ${widget.post.comments.length} comments'),
+=======
+                Text('View all ${widget.post.commentsCount} comments'),
+>>>>>>> fe279d9 (Updated community features)
               ],
             ),
           ),

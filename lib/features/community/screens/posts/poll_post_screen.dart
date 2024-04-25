@@ -53,14 +53,31 @@ class _PollPostScreenState extends State<PollPostScreen> {
     );
   }
 
+<<<<<<< HEAD
   void _submitPoll() {
     if (_formKey.currentState!.validate()) {
       var currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
+=======
+  void _submitPoll() async {
+    if (_formKey.currentState!.validate()) {
+      var currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        String userId = currentUser.uid;
+
+        // Fetch the profile image URL from the 'profiles' collection
+        String profileImageUrl = await FirebaseFirestore.instance
+            .collection('profiles')
+            .doc(userId)
+            .get()
+            .then((doc) => doc.data()?['profileImage'] ?? 'assets/images/default_profile.png');
+
+>>>>>>> fe279d9 (Updated community features)
         // Remove empty options and filter out duplicates
         var uniqueOptions = options.where((option) => option.isNotEmpty).toSet().toList();
         String username = currentUser.email!.split('@').first;
 
+<<<<<<< HEAD
         FirebaseFirestore.instance.collection('posts').add({
           'question': _questionController.text,
           'options': uniqueOptions,
@@ -69,6 +86,18 @@ class _PollPostScreenState extends State<PollPostScreen> {
           'type': 'poll',
           'likes': [],  // Initialize likes count
           'comments': []  // Initialize comments array
+=======
+        // Save the poll to Firestore, now including the profileImageUrl
+        FirebaseFirestore.instance.collection('posts').add({
+          'question': _questionController.text,
+          'options': uniqueOptions,
+          'userId': username,
+          'userProfileImage': profileImageUrl, // Add this line
+          'timestamp': FieldValue.serverTimestamp(),
+          'type': 'poll',
+          'likes': [],
+          'commentsCount': 0,
+>>>>>>> fe279d9 (Updated community features)
         }).then((result) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Poll created successfully!')));
           Navigator.pop(context);

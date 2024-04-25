@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+=======
+>>>>>>> fe279d9 (Updated community features)
 import 'explore_section.dart';
 import 'saved_items_section.dart';
 import 'package:byte_app/features/settings/screens/settings_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+<<<<<<< HEAD
+=======
+import 'package:byte_app/features/profile/sections/UserProfileSection.dart'; // Import the new user profile section
+>>>>>>> fe279d9 (Updated community features)
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -13,6 +20,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+<<<<<<< HEAD
   final List<String> predefinedImages = [
     'assets/images/avatars/men.jpg',
     'assets/images/avatars/men2.jpg',
@@ -52,6 +60,25 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations.profileTitle), // Localized title for the AppBar
+=======
+  String profileImage = '';
+  String username = '';
+
+  void updateProfile(String image, String name) {
+    setState(() {
+      profileImage = image;
+      username = name;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(localizations.profileTitle),
+>>>>>>> fe279d9 (Updated community features)
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
@@ -61,7 +88,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 MaterialPageRoute(builder: (context) => SettingsScreen()),
               );
             },
+<<<<<<< HEAD
             tooltip: localizations.settingsButtonLabel, // Localized tooltip for the settings button
+=======
+            tooltip: localizations.settingsButtonLabel,
+>>>>>>> fe279d9 (Updated community features)
           ),
         ],
         backgroundColor: Colors.transparent,
@@ -73,6 +104,10 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+<<<<<<< HEAD
+=======
+              UserProfileSection(onProfileLoaded: updateProfile),
+>>>>>>> fe279d9 (Updated community features)
               SizedBox(height: 32),
               CircleAvatar(
                 backgroundImage: AssetImage(profileImage),
@@ -80,7 +115,11 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               SizedBox(height: 16),
               Text(
+<<<<<<< HEAD
                 localizations.greetings(username), // Localized greeting
+=======
+                localizations.greetings(username),
+>>>>>>> fe279d9 (Updated community features)
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -88,8 +127,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               SizedBox(height: 24),
+<<<<<<< HEAD
               ExploreSection(), // Assumed to be a predefined widget
               SavedItemsSection(), // Assumed to be a predefined widget
+=======
+              ExploreSection(),
+              SavedItemsSection(),
+>>>>>>> fe279d9 (Updated community features)
             ],
           ),
         ),

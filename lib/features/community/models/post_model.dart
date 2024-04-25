@@ -13,8 +13,14 @@ class PostModel {
   final DateTime timestamp;
   List<String> likes; // Now a list of user IDs
   final List<String> options; // For poll posts
+<<<<<<< HEAD
   final List<dynamic> comments; // For holding comments or comment counts
   Map<String, int> votes;
+=======
+  final int commentsCount; // For holding comments or comment counts
+  Map<String, int> votes;
+  final String authorProfileImage;
+>>>>>>> fe279d9 (Updated community features)
 
   PostModel({
     required this.id,
@@ -26,8 +32,14 @@ class PostModel {
     this.question = '',
     required this.timestamp,
     List<String>? likes,
+<<<<<<< HEAD
     this.options = const [],
     this.comments = const [],
+=======
+    required this.authorProfileImage,
+    this.options = const [],
+    this.commentsCount = 0,
+>>>>>>> fe279d9 (Updated community features)
     Map<String, int>? votes, // Optional parameter for initializing votes
   })  : this.likes = likes ?? [],
         this.votes = votes ?? options.asMap().map((_, option) => MapEntry(option, 0));
@@ -49,7 +61,11 @@ class PostModel {
       'timestamp': timestamp,
       'likes': likes,
       'options': options,
+<<<<<<< HEAD
       'comments': comments,
+=======
+      'commentsCount': commentsCount,
+>>>>>>> fe279d9 (Updated community features)
       'votes': votes,
     };
   }
@@ -96,7 +112,12 @@ class PostModel {
       timestamp: (data['timestamp'] as Timestamp).toDate(),
       likes: List<String>.from(data['likes'] as List<dynamic>? ?? []),
       options: List<String>.from(data['options'] as List<dynamic>? ?? []),
+<<<<<<< HEAD
       comments: data['comments'] as List<dynamic>? ?? [],
+=======
+      commentsCount: data['commentsCount'] as int? ?? 0,
+      authorProfileImage: data['userProfileImage'] as String? ?? 'assets/images/default_profile.png', // Extract profile image URL
+>>>>>>> fe279d9 (Updated community features)
       votes: data['votes'] != null ? Map<String, int>.from(data['votes']) : {},
     );
   }

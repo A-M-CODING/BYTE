@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:byte_app/features/community/models/comment_model.dart';
 import 'package:byte_app/features/community/services/comment_service.dart';
 import 'package:intl/intl.dart';
+<<<<<<< HEAD
+=======
+import 'package:firebase_auth/firebase_auth.dart';
+>>>>>>> fe279d9 (Updated community features)
 
 class CommentsScreen extends StatefulWidget {
   final String postId;
@@ -21,10 +25,22 @@ class _CommentsScreenState extends State<CommentsScreen> {
   Map<String, List<CommentModel>> repliesMap = {};
   List<CommentModel> comments = [];
   Map<String, bool> _repliesVisibility = {};
+<<<<<<< HEAD
+=======
+  String? currentUsername;
+>>>>>>> fe279d9 (Updated community features)
 
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
+=======
+    var currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      // Assuming that you want to use the part of the email before '@' as the username
+      currentUsername = currentUser.email!.split('@').first;
+    }
+>>>>>>> fe279d9 (Updated community features)
     _commentService.fetchComments(widget.postId).listen((commentList) {
       setState(() {
         comments = commentList;
@@ -47,6 +63,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
   }
 
   void _addCommentOptimistically(String content) {
+<<<<<<< HEAD
     String currentUserId = 'some_user_id'; // TODO: Retrieve the actual user ID
     _commentService.addCommentOptimistically(
       widget.postId,
@@ -63,12 +80,29 @@ class _CommentsScreenState extends State<CommentsScreen> {
       comments.insert(0, CommentModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(), // Temp ID
         userId: currentUserId,
+=======
+    if (currentUsername == null) return;  // Ensure the username is not null
+    _commentService.addCommentOptimistically(
+      widget.postId,
+      currentUsername!,
+      content,
+      comments,
+          () => setState(() {
+        comments.removeAt(0);  // Assuming the new comment is at the top
+      }),
+    );
+    setState(() {
+      comments.insert(0, CommentModel(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),  // Temp ID
+        userId: currentUsername!,
+>>>>>>> fe279d9 (Updated community features)
         content: content,
         timestamp: DateTime.now(),
       ));
     });
   }
 
+<<<<<<< HEAD
   void _addReplyOptimistically(String content) {
     if (_replyingToCommentId == null) return;
     String currentUserId = 'some_user_id'; // TODO: Retrieve the actual user ID
@@ -103,6 +137,58 @@ class _CommentsScreenState extends State<CommentsScreen> {
     });
   }
 
+=======
+  // In your _CommentsScreenState class
+
+  void _addReplyOptimistically(String content) {
+    if (_replyingToCommentId == null || currentUsername == null) return;
+
+    final tempId = 'temp_${DateTime.now().millisecondsSinceEpoch}';
+
+    CommentModel optimisticReply = CommentModel(
+      id: tempId,
+      userId: currentUsername!,
+      content: content,
+      timestamp: DateTime.now(),
+      parentId: _replyingToCommentId,
+    );
+
+    // Add the optimistic reply to the local state
+    setState(() {
+      repliesMap.update(
+        _replyingToCommentId!,
+            (replies) => [optimisticReply, ...replies],
+        ifAbsent: () => [optimisticReply],
+      );
+    });
+
+    // Now, try to add the reply to Firestore
+    _commentService.addReply(widget.postId, _replyingToCommentId!, currentUsername!, content).then((replyId) {
+      setState(() {
+        // Replace the whole CommentModel with the one containing the server-generated ID
+        final index = repliesMap[_replyingToCommentId]!.indexWhere((reply) => reply.id == tempId);
+        if (index != -1) {
+          repliesMap[_replyingToCommentId]![index] = CommentModel(
+            id: replyId,
+            userId: currentUsername!,
+            content: content,
+            timestamp: optimisticReply.timestamp, // Preserve the original timestamp
+            parentId: _replyingToCommentId,
+          );
+        }
+      });
+    }).catchError((error) {
+      // If there was an error, remove the optimistic reply
+      setState(() {
+        repliesMap[_replyingToCommentId]?.removeWhere((reply) => reply.id == tempId);
+      });
+      // Optionally, show an error message to the user
+    });
+  }
+
+
+
+>>>>>>> fe279d9 (Updated community features)
   Widget _buildReplyTextField() {
     if (!_isReplying) return SizedBox();
     return Padding(

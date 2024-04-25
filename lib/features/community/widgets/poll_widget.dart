@@ -1,5 +1,9 @@
 // lib/features/community/widgets/poll_widget.dart
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
+=======
+import 'package:byte_app/features/community/services/poll_service.dart';
+>>>>>>> fe279d9 (Updated community features)
 
 class PollWidget extends StatefulWidget {
   final String postId;
@@ -34,9 +38,25 @@ class _PollWidgetState extends State<PollWidget> {
     setState(() {
       localVotes.update(option, (value) => value + 1, ifAbsent: () => 1);
     });
+<<<<<<< HEAD
     widget.onVote(widget.question, option);
   }
 
+=======
+
+    // Now, save this to the database
+    PollService().voteOnPoll(widget.postId, option).catchError((e) {
+      // If an error occurs, you may want to rollback the local state
+      setState(() {
+        localVotes.update(option, (value) => value - 1);
+      });
+    });
+
+    widget.onVote(widget.question, option);
+  }
+
+
+>>>>>>> fe279d9 (Updated community features)
   @override
   Widget build(BuildContext context) {
     int totalVotes = localVotes.values.fold(0, (previousValue, element) => previousValue + element);

@@ -3,6 +3,10 @@ import 'package:animate_do/animate_do.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:byte_app/data/services/authentication_service.dart';
+<<<<<<< HEAD
+=======
+import 'package:byte_app/features/form/screens/health_information_form.dart';
+>>>>>>> fe279d9 (Updated community features)
 
 class SignupScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -108,7 +112,14 @@ class SignupScreen extends StatelessWidget {
                           SnackBar(content: Text(result)),
                         );
                       } else {
+<<<<<<< HEAD
                         // TODO: Navigate to the next screen after sign up
+=======
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HealthInformationForm()),
+                        );
+>>>>>>> fe279d9 (Updated community features)
                       }
                     },
                     color: Colors.greenAccent,

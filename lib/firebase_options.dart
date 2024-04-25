@@ -29,12 +29,20 @@ class DefaultFirebaseOptions {
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
+<<<<<<< HEAD
           'you can reconfigure this by running the FlutterFire CLI again.',
+=======
+              'you can reconfigure this by running the FlutterFire CLI again.',
+>>>>>>> fe279d9 (Updated community features)
         );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
+<<<<<<< HEAD
           'you can reconfigure this by running the FlutterFire CLI again.',
+=======
+              'you can reconfigure this by running the FlutterFire CLI again.',
+>>>>>>> fe279d9 (Updated community features)
         );
       default:
         throw UnsupportedError(
@@ -67,6 +75,11 @@ class DefaultFirebaseOptions {
     messagingSenderId: '309428131314',
     projectId: 'byte-e6f0c',
     storageBucket: 'byte-e6f0c.appspot.com',
+<<<<<<< HEAD
+=======
+    androidClientId: '309428131314-ehhq2j3grvhpfgq8d3lcsngm68mp560n.apps.googleusercontent.com',
+    iosClientId: '309428131314-bmkuomso6nd7vbv9iaudglp36j9brmmk.apps.googleusercontent.com',
+>>>>>>> fe279d9 (Updated community features)
     iosBundleId: 'com.example.byteApp',
   );
 
@@ -76,6 +89,11 @@ class DefaultFirebaseOptions {
     messagingSenderId: '309428131314',
     projectId: 'byte-e6f0c',
     storageBucket: 'byte-e6f0c.appspot.com',
+<<<<<<< HEAD
+=======
+    androidClientId: '309428131314-ehhq2j3grvhpfgq8d3lcsngm68mp560n.apps.googleusercontent.com',
+    iosClientId: '309428131314-oblloiinmspk2jil5lsd835b28f44q91.apps.googleusercontent.com',
+>>>>>>> fe279d9 (Updated community features)
     iosBundleId: 'com.example.byteApp.RunnerTests',
   );
 }

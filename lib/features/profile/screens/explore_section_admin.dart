@@ -1,4 +1,4 @@
-// lib/features/profile/screens/explore_section.dart
+// lib/features/profile/screens/explore_section_admin.dart
 import 'package:flutter/material.dart';
 import 'package:byte_app/features/profile/sections/ExploreSection.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -6,8 +6,7 @@ import 'package:byte_app/features/community/screens/feed.dart';
 import 'package:byte_app/features/community/screens/post.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-
-class ExploreSection extends StatelessWidget {
+class ExploreSectionAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
@@ -62,10 +61,9 @@ class ExploreSection extends StatelessWidget {
                   );
                 },
               ),
-<<<<<<< HEAD
               SizedBox(width: 20),
               ExploreCard(
-                title: localizations.postButton, // Assuming you have this in your localizations
+                title: localizations.postButton,
                 iconData: Icons.create,
                 color: Colors.yellow,
                 width: cardWidth,
@@ -79,9 +77,6 @@ class ExploreSection extends StatelessWidget {
               ),
               SizedBox(width: 20),
             ],
-=======
-              SizedBox(width: 20),],
->>>>>>> fe279d9 (Updated community features)
           ),
         ),
       ],

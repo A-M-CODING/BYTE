@@ -38,4 +38,8 @@ class CommentModel {
       parentId: data['parentId'] as String?,
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> fe279d9 (Updated community features)

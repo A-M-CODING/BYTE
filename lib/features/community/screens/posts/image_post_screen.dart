@@ -34,7 +34,20 @@ class _ImagePostScreenState extends State<ImagePostScreen> {
     if (_formKey.currentState!.validate() && _image != null) {
       var currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
+<<<<<<< HEAD
         // Upload image to Firebase Storage using the method from Code A
+=======
+        String userId = currentUser.uid;
+
+        // Fetch the profile image URL from the 'profiles' collection
+        String profileImageUrl = await FirebaseFirestore.instance
+            .collection('profiles')
+            .doc(userId)
+            .get()
+            .then((doc) => doc.data()?['profileImage'] ?? 'assets/images/default_profile.png');
+
+        // Upload image to Firebase Storage
+>>>>>>> fe279d9 (Updated community features)
         final ref = FirebaseStorage.instance
             .ref()
             .child('images/${DateTime.now().millisecondsSinceEpoch}_${_image!.name}');
@@ -44,15 +57,27 @@ class _ImagePostScreenState extends State<ImagePostScreen> {
 
           String username = currentUser.email!.split('@').first;
 
+<<<<<<< HEAD
           // Save post details in Firestore
+=======
+          // Save post details in Firestore, now including the profileImageUrl
+>>>>>>> fe279d9 (Updated community features)
           FirebaseFirestore.instance.collection('posts').add({
             'description': _descriptionController.text,
             'imageUrl': url,
             'userId': username,
+<<<<<<< HEAD
             'timestamp': FieldValue.serverTimestamp(),
             'type': 'image',
             'likes': [],  // Initialize likes count
             'comments': []  // Initialize comments array
+=======
+            'userProfileImage': profileImageUrl, // Add this line
+            'timestamp': FieldValue.serverTimestamp(),
+            'type': 'image',
+            'likes': [],
+            'commentsCount': 0,
+>>>>>>> fe279d9 (Updated community features)
           }).then((result) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Image post created successfully!')));
             Navigator.pop(context);

@@ -61,6 +61,10 @@ class _FeedScreenState extends State<FeedScreen> {
               return PostWidget(
                 key: ValueKey(post.id),
                 post: post,
+<<<<<<< HEAD
+=======
+                profileImage: post.authorProfileImage,
+>>>>>>> fe279d9 (Updated community features)
                 onLike:(){
 
                 },
