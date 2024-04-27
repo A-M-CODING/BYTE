@@ -1,19 +1,12 @@
 import streamlit as st
-import base64
 
 def main():
     st.title("APK File Downloader")
-    
-    # Provide download link to the APK file
     st.markdown("### Download APK")
-    st.markdown(get_binary_file_downloader_html("app-release.apk", "Download APK"), unsafe_allow_html=True)
 
-def get_binary_file_downloader_html(bin_file, file_label='File'):
-    with open(bin_file, 'rb') as f:
-        data = f.read()
-    bin_str = base64.b64encode(data).decode()
-    href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="{bin_file}">{file_label}</a>'
-    return href
+    # The direct URL to the APK file in your GitHub repository
+    apk_url = 'https://github.com/A-M-CODING/BYTE/raw/streamlit-flutter-apk/app-release.apk'
+    st.markdown(f'[Download APK]({apk_url})', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
