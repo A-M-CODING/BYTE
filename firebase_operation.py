@@ -1,15 +1,19 @@
 # firebase_operation.py
 
+import base64
+import json
 import firebase_admin
 from firebase_admin import credentials, firestore, auth 
 import os
+import streamlit as st
 
-# Get the path to the Firebase admin SDK JSON file
-current_dir = os.path.dirname(os.path.abspath(__file__))
-json_file_path = os.path.join(current_dir, 'byte-e6f0c-firebase-adminsdk-ileby-166e4268f3.json')
+# Decode the JSON credentials from Streamlit's secrets
+encoded_json_str = st.secrets["firebase_credentials"]["json"]
+json_str = base64.b64decode(encoded_json_str).decode('utf-8')
+json_data = json.loads(json_str)
 
-# Initialize Firebase Admin
-cred = credentials.Certificate(json_file_path)
+# Initialize Firebase Admin with decoded credentials
+cred = credentials.Certificate(json_data)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
