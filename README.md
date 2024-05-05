@@ -5,6 +5,25 @@ Find more about BYTE, watch tutorial video and download APK here: https://byte-a
 
 Note: only available for Android devices currently
 
+## Project Setup
+### Prerequisites:
+
+- Flutter SDK
+- Firebase account
+- Android Studio or VS Code
+
+### Steps to run the project:
+
+- Clone the repository to your local machine.
+- Open the project in Android Studio or VS Code.
+- Configure Firebase:
+- Create a new project in the Firebase console.
+- Add Android and iOS apps in the Firebase project settings.
+- Download the google-services.json and GoogleService-Info.plist and place them in their respective app directories.
+- Run flutter pub get to install the dependencies.
+- Deploy cloud functions and cloud run job
+- Build and run the application on an emulator or physical device.
+
 ## Details About BYTE
 
 ### 1. Localization
