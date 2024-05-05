@@ -37,7 +37,9 @@ This dual-method authentication approach not only enhances security but also cat
 ![form](https://github.com/A-M-CODING/BYTE/assets/86928073/608ac29f-2783-43b6-b6af-c2c077093d87)
 
 The form feature in BYTE serves as a vital component for collecting user-specific data to personalize dietary recommendations and ensure user anonymity. When users interact with BYTE, they are prompted to input essential information via a simple form. This data, including dietary restrictions, allergies, and food preferences, is then securely stored in Google Cloud Firestore. The use of Firestore ensures real-time data storage and retrieval, providing a dynamic and responsive user experience.
+
 The design of the form prioritizes user privacy and minimal data collection. No unnecessary information, such as the user's name, is requested, maintaining the user's anonymity while still allowing for personalized interactions with the app. Additionally, users have the flexibility to update their information at any time, ensuring that their dietary recommendations remain accurate and relevant to their current needs.
+
 This approach not only enhances the personalization of the service but also aligns with BYTE's commitment to privacy and user-centric design. The technology stack, including Google Cloud Firestore, supports this feature by offering robust, scalable, and secure data management, critical for handling sensitive user information efficiently.
 
 ### 4. Document Upload Feature
@@ -45,7 +47,9 @@ This approach not only enhances the personalization of the service but also alig
 ![doc](https://github.com/A-M-CODING/BYTE/assets/86928073/4fb25fc0-c515-485a-8cda-8cc9f15ede21)
 
 The Document Upload feature in BYTE is a sophisticated component that enhances the app's ability to provide personalized dietary guidance. When users upload documents—such as medical reports or dietary plans—they are temporarily stored in cloud storage. Triggering a Google Cloud Function upon upload, the system captures the user's ID and document details. 
+
 This function, hosted on Google Cloud Run, employs PDFPlumber to extract text, including formatted data like tables, from these documents efficiently. The extracted text is then processed by Cohere’s CoChat endpoint, which generates concise insights focusing on key information relevant to the user's dietary needs. These insights are subsequently chunked using LangChain and securely stored in the Weaviate vector database. Weaviate leverages multi-tenancy to ensure that each user’s data remains isolated in a separate vector space, enhancing privacy and data security.
+
 This architecture supports Retrieval Augmented Generation (RAG), enabling BYTE’s chatbot to pull necessary information from stored insights to generate informed and precise responses to user queries. This functionality is integral to BYTE's mission of providing tailored dietary advice.
 
 ### 5. Profile Page
@@ -53,6 +57,7 @@ This architecture supports Retrieval Augmented Generation (RAG), enabling BYTE�
 ![prof](https://github.com/A-M-CODING/BYTE/assets/86928073/15deacdd-c78f-452c-84e7-1c2722e489ce)
 
 The profile page in BYTE is designed as the central hub of the application, providing a seamless and intuitive navigation experience. From this main page, users can effortlessly access all the app's features with just one tap. Key functionalities available from the profile page include the scan feature for analyzing food labels, the interactive chat feature for dietary inquiries, and the community feature for engaging with other users who share similar dietary restrictions.
+
 Additionally, the profile page includes a top icon that allows users to quickly navigate to the settings page, where they can adjust their preferences and account settings. For added convenience, a sliding panel at the bottom of the profile page displays users' recently favorited items. This panel includes an option to "see all favorites" making it simple for users to revisit their preferred food items and recipes. This thoughtful design makes the profile page not only the gateway to all essential features but also a personalized space where users can manage their dietary preferences efficiently.
 
 ### 6. Scan Feature
@@ -60,8 +65,11 @@ Additionally, the profile page includes a top icon that allows users to quickly 
 ![scan](https://github.com/A-M-CODING/BYTE/assets/86928073/88704bb4-6587-4ec2-94b4-5164826f0cda)
 
 BYTE's scan feature is a cutting-edge tool designed to support individuals with dietary restrictions by allowing them to quickly and effectively analyze food products on the go. Utilizing the smartphone camera, users can capture images of food labels or products, which are then processed using Gemini 1.5 Pro, a multi-modal AI model hosted on Google Cloud Functions. This model provides a detailed breakdown of the ingredients and nutritional content.
+
 The information from the scanned image is combined with the user's health data and further analyzed by another cloud function utilizing Cohere's Command-R model. This comprehensive analysis takes into account both the visual data from the product and the user's specific health requirements to deliver personalized dietary advice. This advice includes a concise summary, presented in about 10 words at the top of the screen for quick reference, with the option to explore more detailed guidance if needed.
+
 Sources are also provided along with the response so that users can be sure that the response is credible and view the provided sources for further knowledge and clarity. The users can then go on to either continue chatting about the item (or anything else) if they want or fetch alternative food products, or both, or simply go back.
+
 This feature streamlines the dietary management process, making it simpler for users to make informed decisions about the foods they consume while shopping or dining out. The integration of advanced image recognition and personalized health analysis underscores BYTE's commitment to providing tailored dietary support, enhancing both convenience and the overall user experience.
 
 ### 7. Get Alternatives Feature
@@ -69,7 +77,9 @@ This feature streamlines the dietary management process, making it simpler for u
 ![alt](https://github.com/A-M-CODING/BYTE/assets/86928073/2e02c744-a618-422d-9354-885336ba76d0)
 
 The Get Alternatives feature in BYTE is designed to seamlessly provide users with personalized alternative food product suggestions and relevant video content. This process begins when a Google Cloud Function retrieves image data processed by the Gemini 1.5 Pro model and user health details from Firestore. Using this data, a tailored search query is generated through Cohere's co.chat endpoint using Command-R model with the search query generation parameter set to true, ensuring that only search queries are produced.
+
 Once the search query is generated, it triggers two parallel Google Cloud Functions: one uses Google Custom Search Engine to fetch alternative food product links from Amazon, and the other uses LangChain's YouTube search tool to find pertinent YouTube videos. The Amazon links are parsed to extract detailed information such as product name, image, ratings, and reviews. Concurrently, YouTube v3 data API is utilized to retrieve key video details like thumbnails and titles. The parallel invocation of these two functions ensures faster and more efficient responses.
+
 These results are then displayed on the alternative products page in the form of interactive cards, offering users immediate visual and textual information about each alternative. Users have the option to save favorites by clicking a heart icon on these cards, with saved items being stored in the Firestore database linked to their user ID for easy access on the favorites page and profile favorites panel. This feature is designed to enhance user experience by providing immediate and personalized alternatives without the overhead of unnecessary data storage, aligning with BYTE's focus on efficiency and user-centric design.
 
 ### 8. Chat Feature
@@ -86,6 +96,7 @@ This chat feature represents a fusion of real-time data interaction, advanced na
 ### 9. Community Feature
 
 ![comm](https://github.com/A-M-CODING/BYTE/assets/86928073/d84714bc-e361-4252-8a4d-c5e4bf3935b3)
+![comm2](https://github.com/A-M-CODING/BYTE/assets/86928073/1d1adfb0-2964-4ec4-86f5-b5c97a0f866d)
 
 The community feature is a dynamic platform within BYTE where users can actively engage through posts, comments, polls, and more. Designed to foster interaction and discussion, this feature enhances the overall user experience by providing a space for sharing information and opinions.
 In BYTE, the community feature leverages Firebase Firestore to manage real-time interactions seamlessly. Users can enjoy a variety of interactive options that make staying connected and informed both easy and enjoyable.
