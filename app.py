@@ -13,11 +13,15 @@ def main():
     st.markdown(f'[Download APK]({apk_url})', unsafe_allow_html=True)
     st.markdown('\n Note: BYTE’s responses are backed by internet citations - please check out the sources for more information if required. For sensitive or extreme matters, consult healthcare experts.')
 
-    # BYTE Tutorial Youtube Videp
+    # BYTE Tutorial Youtube Vide0
     st.title('BYTE Tutorial')
     st.markdown('Before using the app, please watch this short tutorial video to learn how to use BYTE.')
     st.video("https://youtu.be/GmMsZzYRcmM")
 
+    # BYTE Feedback Form
+    st.title('BYTE Feedback')
+    st.markdown('After using the app, please take out a few minutes and provide your valuable feedback about BYTE. \n Feedback form: https://docs.google.com/forms/d/1V2jbOza4hZbWmatlqL4DfSAUFX6Gt2j95wOG2-oShv8/edit?pli=1')
+    
     # Display Active Users
     st.title('Active Users')
     active_users_count =  get_total_users_count()
