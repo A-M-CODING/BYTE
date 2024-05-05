@@ -2,6 +2,7 @@
 Nutritionist in your pocket
 
 Find more about BYTE, watch tutorial video and download APK here: https://byte-apk.streamlit.app/
+
 Note: only available for Android devices currently
 
 ## Details About BYTE
