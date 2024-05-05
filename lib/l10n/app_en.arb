@@ -206,6 +206,7 @@
          "yourFavorites": "Your Favorites",
            "pleaseLoginToSeeFavorites": "Please log in to see favorites",
            "noFavoriteProductsFound": "No favorite products found",
-           "noFavoriteVideosFound": "No favorite videos found"
+           "noFavoriteVideosFound": "No favorite videos found",
+           "healthInfoForm": "Health Information Form"
 
 }
