@@ -5,6 +5,7 @@
   "email": "이메일",
   "password": "비밀번호",
   "loginButtonText": "로그인",
+  "healthInfoForm": "건강 정보 양식",
   "login": "로그인",
   "dontHaveAccount": "계정이 없으신가요?",
   "signUp": "가입하기",
