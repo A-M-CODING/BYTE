@@ -6,11 +6,17 @@ from firebase_operation import get_feedback_with_username, get_total_users_count
 
 def main():
     st.title("APK File Downloader")
-    st.markdown("BYTE - nutritionist in your packet.Get immediate nutrition advice, alternate food recommendations and connect with like-minded people!")
+    st.markdown("BYTE - nutritionist in your packet. /nGet immediate nutrition advice, alternate food recommendations and connect with like-minded people!")
     
     # APK Download Link
     apk_url = 'https://github.com/A-M-CODING/BYTE/raw/streamlit-flutter-apk/app-release.apk'
     st.markdown(f'[Download APK]({apk_url})', unsafe_allow_html=True)
+    st.markdown('/n Note: BYTE’s responses are backed by internet citations - please check out the sources for more information if required. For sensitive or extreme matters, consult healthcare experts.')
+
+    # BYTE Tutorial Youtube Videp
+    st.title('BYTE Tutorial')
+    st.markdown('Before using the app, please watch this short tutorial video to learn how to use BYTE.')
+    st.video("https://youtu.be/GmMsZzYRcmM")
 
     # Display Active Users
     st.title('Active Users')
