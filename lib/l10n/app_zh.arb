@@ -5,6 +5,7 @@
   "email": "电子邮件",
   "password": "密码",
   "loginButtonText": "登录",
+  "healthInfoForm": "健康信息表",
   "login": "登录",
   "dontHaveAccount": "还没有账户？",
   "signUp": "注册",
