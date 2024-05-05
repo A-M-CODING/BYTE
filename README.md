@@ -1,5 +1,5 @@
 # BYTE
-Nutritionist in your pocket
+_Nutritionist in your pocket_
 
 Find more about BYTE, watch tutorial video and download APK here: https://byte-apk.streamlit.app/
 
@@ -34,11 +34,15 @@ This dual-method authentication approach not only enhances security but also cat
 
 ### 3. Form Screen
 
+![form](https://github.com/A-M-CODING/BYTE/assets/86928073/608ac29f-2783-43b6-b6af-c2c077093d87)
+
 The form feature in BYTE serves as a vital component for collecting user-specific data to personalize dietary recommendations and ensure user anonymity. When users interact with BYTE, they are prompted to input essential information via a simple form. This data, including dietary restrictions, allergies, and food preferences, is then securely stored in Google Cloud Firestore. The use of Firestore ensures real-time data storage and retrieval, providing a dynamic and responsive user experience.
 The design of the form prioritizes user privacy and minimal data collection. No unnecessary information, such as the user's name, is requested, maintaining the user's anonymity while still allowing for personalized interactions with the app. Additionally, users have the flexibility to update their information at any time, ensuring that their dietary recommendations remain accurate and relevant to their current needs.
 This approach not only enhances the personalization of the service but also aligns with BYTE's commitment to privacy and user-centric design. The technology stack, including Google Cloud Firestore, supports this feature by offering robust, scalable, and secure data management, critical for handling sensitive user information efficiently.
 
 ### 4. Document Upload Feature
+
+![doc](https://github.com/A-M-CODING/BYTE/assets/86928073/4fb25fc0-c515-485a-8cda-8cc9f15ede21)
 
 The Document Upload feature in BYTE is a sophisticated component that enhances the app's ability to provide personalized dietary guidance. When users upload documents—such as medical reports or dietary plans—they are temporarily stored in cloud storage. Triggering a Google Cloud Function upon upload, the system captures the user's ID and document details. 
 This function, hosted on Google Cloud Run, employs PDFPlumber to extract text, including formatted data like tables, from these documents efficiently. The extracted text is then processed by Cohere’s CoChat endpoint, which generates concise insights focusing on key information relevant to the user's dietary needs. These insights are subsequently chunked using LangChain and securely stored in the Weaviate vector database. Weaviate leverages multi-tenancy to ensure that each user’s data remains isolated in a separate vector space, enhancing privacy and data security.
