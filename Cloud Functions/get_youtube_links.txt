@@ -1,0 +1,69 @@
+# This cloud function takes as parameter the generated search query and passes it to LangChain Youtube search tool which retrieves relevant youtube video links. Youtube v3 Data API is used to fetch youtube vidoe data for all the links, such as title and thumbnail image, which is then returned.
+#
+
+ Function to extract video info from YouTube API
+def get_video_info(api_key, video_url):
+    video_id = video_url.split('v=')[1].split('&')[0]
+    params = {
+        'id': video_id,
+        'part': 'snippet',
+        'key': api_key
+    }
+    api_url = 'https://www.googleapis.com/youtube/v3/videos'
+    response = requests.get(api_url, params=params)
+    if response.status_code == 200:
+        video_data = response.json()
+        items = video_data.get('items', [])
+        if items:
+            title = items[0]['snippet']['title']
+            thumbnail_url = items[0]['snippet']['thumbnails']['high']['url']
+            return {'title': title, 'thumbnail_url': thumbnail_url}
+        else:
+            return {'title': 'Video not found', 'thumbnail_url': None}
+    else:
+        return {'title': 'Failed to retrieve video data', 'thumbnail_url': None}
+
+# Function to search YouTube videos using LangChain YouTube Tool
+def search_youtube_videos(search_query, api_key):
+    search_query = f"recipes for {search_query}, 5"
+    tool = YouTubeSearchTool()
+    yt = tool.run(search_query)
+    yt_list = ast.literal_eval(yt)
+
+    videos_info = []
+    for video_url in yt_list:
+        video_info = get_video_info(api_key, video_url)
+        videos_info.append({
+            'title': video_info['title'],
+            'thumbnailUrl': video_info['thumbnail_url'],
+            'videoLink': video_url
+        })
+
+    return videos_info
+
+# HTTP Cloud Function entry point
+def fetch_youtube_videos(request):
+    if request.method == 'OPTIONS':
+        headers = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Max-Age': '3600'
+        }
+        return ('', 204, headers)
+
+    if request.method == 'POST':
+        request_json = request.get_json(silent=True)
+        search_query = request_json.get('search_query')
+        if not search_query:
+            return 'Missing "search_query" in request', 400
+
+        api_key = get_secret('google-api-key')
+        video_details = search_youtube_videos(search_query, api_key)
+
+        headers = {
+            'Access-Control-Allow-Origin': '*'
+        }
+        return (video_details, 200, headers)
+
+    return 'Method not supported', 405

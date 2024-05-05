@@ -1,0 +1,38 @@
+# This is the function to generate search queries using Cohere's co.chat endpoint with Command-r model, using the search_queries_only mode.
+
+def search_query_generation(request):
+    """HTTP Cloud Function for generating search queries.
+    Args:
+        request (flask.Request): The request object.
+        
+    Returns:
+        The generated search queries.
+    """
+    request_json = request.get_json(silent=True)
+    
+    # Validate input JSON contains 'nutr_label' and 'user_info'
+    if request_json and 'nutr_label' in request_json and 'user_info' in request_json:
+        nutr_label = escape(request_json['nutr_label'])
+        user_info = escape(request_json['user_info'])
+        
+        # Retrieve the Cohere API key from Secret Manager
+        cohereAPIKey = get_cohere_api_key()
+        
+        # Initialize the Cohere client with the API key
+        co = cohere.Client(cohereAPIKey)
+        
+        # Generate the search query using Cohere's chat endpoint
+        response = co.chat( 
+            model='command-r',
+            message=f" ## TASK:  Generate a search query for fetching alternative healthier products as an alternate for the product whose information is given below, suitable for the user whose dietary information is provided below. \n ## IMPORTANT: RESPOND USING MAX 5 WORDS, NO MORE ## STYLE GUIDE: \n General search query to find a broad range of products on Amazon. Don't mention specific diseases or too many limiting factors as that hinders fetching of products. For example, if person has diabetes, mention low-sugar in the query but do not be too specific. RESPOND IN LESS THAN 5 WORDS! \n\n ## PRODUCT INFORMATION for which healthier alternatives are to be found: {nutr_label} \n\n ## USER INFORMATION which has to be considered: {user_info}",
+            search_queries_only=True
+        )
+        
+        # Extract the search query text from the response
+        search_query_text = response.search_queries[0].text
+        #search_query_text = response.text
+        
+        # Return the search query text
+        return search_query_text
+    else:
+        return 'Missing "nutr_label" or "user_info" in request', 400

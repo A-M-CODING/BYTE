@@ -1,0 +1,150 @@
+# This is deployed to Google Cloud Run for taking users' medical files, uploaded temporarily to Cloud Storage, extracting text in a formatted manner using PDFPlumber from them, generating insights through Cohere's co.chat endpoint with Command-r model, chunking the generated insights using LangChain and then inserting into Weaviate cluster through multi-tenancy where each user is a separate tenant to maintain privacy and abstraction.
+
+
+import os
+import pdfplumber
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_cohere import ChatCohere
+from langchain_core.messages import HumanMessage
+import weaviate
+from weaviate.classes.tenants import Tenant
+from google.cloud import storage
+import re
+import logging
+logging.basicConfig(level=logging.INFO)
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+
+llm = ChatCohere(cohere_api_key = os.environ.get("COHERE_API_KEY"))
+
+def remove_personal_info(text):
+    # Patterns that likely indicate personal information
+    patterns = [
+        r"\bName:\s?.*",
+        r"\bPatient ID:\s?.*",
+        r"\bDate of Birth:\s?.*",
+        r"\bAddress:\s?.*",
+        r"\bPhone:\s?.*\b",
+        r"\bSocial Security Number:\s?.*"
+    ]
+    for pattern in patterns:
+        text = re.sub(pattern, "", text)  # Remove text that matches patterns
+    return text
+def filter_and_merge_chunks(chunks):
+    filtered_chunks = []
+    for chunk in chunks:
+        # Remove chunks that are only headings or too short to form meaningful insights
+        if len(chunk.strip().split()) > 10 and not chunk.strip().endswith(':'):  # More than 10 words and not ending with a colon
+            if filtered_chunks and len(filtered_chunks[-1].strip()) + len(chunk.strip()) < 300:
+                # Merge this chunk with the previous if the total length is reasonable
+                filtered_chunks[-1] += " " + chunk
+            else:
+                filtered_chunks.append(chunk)
+    return filtered_chunks
+
+def process_pdf(tenant_name, file_name):
+    # Google Cloud Storage setup
+    bucket_name = "byte-e6f0c.appspot.com"
+    prefix = "documents/"
+    file_path = f"gs://{bucket_name}/{prefix}{tenant_name}/{file_name}"
+
+    # Initialize a Google Cloud Storage client
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+
+    # Construct the Blob object and download the file to a temporary path
+    blob = bucket.blob(f"{prefix}{tenant_name}/{file_name}")
+    temp_pdf_path = "/tmp/temp_file.pdf"
+    blob.download_to_filename(temp_pdf_path)
+
+    # Process the PDF file
+    splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=50)
+    data_objects = []
+    with pdfplumber.open(temp_pdf_path) as pdf:
+        for page in pdf.pages:
+            text = page.extract_text() or ""
+            text = remove_personal_info(text)  # Filter out personal info from the text
+            tables = page.extract_tables()
+            table_descriptions = '\n'.join(
+                ['Table: ' + ', '.join([','.join(row) for row in table]) for table in tables]
+            ) if tables else ""
+
+            full_content = f"{text}\n{table_descriptions}"
+            insights = generate_insights(full_content)
+
+            # Split the insights into chunks and filter/merge them
+            insights_chunks = splitter.split_text(insights)
+            insights_chunks = filter_and_merge_chunks(insights_chunks)  # Apply filtering and merging
+
+            # Assign each insight chunk to a data object
+            for chunk in insights_chunks:
+                data_object = {
+                    "content": chunk,
+                    "source": file_name,
+                    "page_number": str(page.page_number)
+                }
+                data_objects.append(data_object)
+                print(data_object)  # Print data objects for each chunk
+
+    # Clean up the temporary file
+    os.remove(temp_pdf_path)
+
+    return data_objects
+
+def generate_insights(content):
+    prompt_text = f"""
+    ## Instructions
+    Process the content to directly extract actionable insights useful for nutritional advice or medical deductions. Focus on precise, relevant information without introductory or concluding remarks.
+
+    ## Requirements
+    - Each insight must be directly applicable to answering specific nutrition-related queries.
+    - Keep each insight concise, ideally under 300 words, and ready to be integrated into a nutrition advice platform.
+    - The language should be clear and direct, avoiding unnecessary elaborations or thematic introductions.
+    - Format insights to ensure they are standalone pieces of information that do not require additional context to be understood.
+
+    ## Content
+    {content}
+    """
+
+    messages = [HumanMessage(content=prompt_text)]
+    insights = llm.invoke(messages).content
+    return insights
+
+
+def upload_data(tenant_name, doc):
+    try:
+        client = weaviate.connect_to_wcs(
+            cluster_url=os.environ.get('WEAVIATE_ENDPOINT'),
+            auth_credentials=weaviate.auth.AuthApiKey(api_key=os.environ.get('WEAVIATE_API_KEY')),
+            headers={"X-Cohere-Api-Key": os.environ.get("COHERE_API_KEY")}
+        )
+        multi_collection = client.collections.get("UserInformation")
+        multi_collection.tenants.create(tenants=[Tenant(name=tenant_name)])
+        multi_tenantA = multi_collection.with_tenant(tenant_name)
+
+        responses = []
+        for data in doc:
+            object_id = multi_tenantA.data.insert(properties=data)
+            responses.append(object_id)
+
+        return {"status": "success", "data": responses}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+
+
+@app.route('/process-pdf', methods=['POST'])
+def process_pdf_endpoint():
+    data = request.get_json()
+    tenant_name = data['tenant_name']
+    file_name = data['file_name']
+    try:
+        document_data = process_pdf(tenant_name, file_name)
+        response = upload_data(tenant_name, document_data)
+        return jsonify(response)
+    except Exception as e:
+        app.logger.error(f"Failed to process PDF: {e}")
+        return jsonify({"error": str(e)}), 400

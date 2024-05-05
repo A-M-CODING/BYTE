@@ -1,0 +1,88 @@
+# This cloud function takes as parameter the generated search query and passes it to a custom/programmable google search engine which retrieves alternate food product links from Amazon. The links are then scraped for information such as name, image url, ratings and reviews which are then returned.
+
+
+# Function to scrape Amazon product details
+def scrape_amazon_product(url):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+        "Accept-Encoding": "gzip, deflate, br",
+        "DNT": "1",
+        "Connection": "close",
+        "Upgrade-Insecure-Requests": "1",
+        'Accept-Language': 'da, en-gb, en',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,/;q=0.8',
+        'Referer': 'https://www.google.com/'
+    }
+
+    page = requests.get(url, headers=headers)
+    soup = BeautifulSoup(page.content, "html.parser")
+    product_info = {}
+
+    # Product Title
+    title_tag = soup.find("span", id="productTitle")
+    product_info['title'] = title_tag.get_text(strip=True) if title_tag else 'No Title Found'
+
+    # Product Image
+    image_tag = soup.find("img", id="landingImage")
+    product_info['image_url'] = image_tag['src'] if image_tag else 'No Image Found'
+
+    # Ratings and Review Count
+    ratings_tag = soup.find("i", {"data-hook": "average-star-rating"})
+    product_info['rating'] = ratings_tag.get_text(strip=True) if ratings_tag else 'No Ratings Found'
+    
+    review_count_tag = soup.find("span", {"id": "acrCustomerReviewText"})
+    product_info['review_count'] = review_count_tag.get_text(strip=True) if review_count_tag else 'No Review Count Found'
+
+    return product_info
+
+# HTTP Cloud Function entry point
+def fetch_alternate_products(request): 
+    # Handle pre-flight CORS requests
+    if request.method == 'OPTIONS':
+        headers = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Max-Age': '3600'
+        }
+        return ('', 204, headers)
+
+    # Handle POST requests
+    if request.method == 'POST':
+        request_json = request.get_json(silent=True)
+        search_query = request_json.get('search_query')
+        if not search_query:
+            return 'Missing "search_query" in request', 400
+
+        googleAPIKey = get_secret('google-api-key')
+        searchEngineID = get_secret('search-engine-id')
+        searchQuery = f"links to buy food products for {search_query}"
+        url = "https://www.googleapis.com/customsearch/v1"
+        params  = {
+            "q": searchQuery,
+            "key": googleAPIKey,
+            "cx": searchEngineID
+        }
+
+        response = requests.get(url, params=params)
+        results = response.json()
+        links_array = [item['link'] for item in results['items'][:6]]
+
+        product_data = []
+        for url in links_array:
+            product_details = scrape_amazon_product(url)
+            product_data.append({
+                "url": url,
+                "name": product_details['title'],
+                "rating": product_details['rating'],
+                "reviewCount": product_details['review_count'],
+                "image": product_details['image_url']
+            })
+
+        headers = {
+            'Access-Control-Allow-Origin': '*'
+        }
+        return (product_data, 200, headers)
+
+    # Optionally, handle other methods or return an error for unsupported methods
+    return 'Method not supported', 405
