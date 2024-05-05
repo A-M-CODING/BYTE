@@ -180,7 +180,8 @@
          "noFavoriteVideosFound": "لم يتم العثور على مقاطع فيديو مفضلة",
          "errorLoadingData": "خطأ في تحميل البيانات: {error}",
          "rating": "التقييم: {rating}",
-         "reviews": "المراجعات: {reviewCount}"
+         "reviews": "المراجعات: {reviewCount}",
+         "healthInfoForm": "نموذج معلومات الصحة"
 
 
 }
