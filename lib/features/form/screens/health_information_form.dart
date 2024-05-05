@@ -153,7 +153,7 @@ class HealthInformationFormState extends State<HealthInformationForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.aboutUs,
+          AppLocalizations.of(context)!.healthInfoForm,
           style: AppTheme.of(context).typography.title1,
         ),
         backgroundColor: theme.primaryBackground, // Setting app bar background from theme
@@ -230,7 +230,7 @@ class HealthInformationFormState extends State<HealthInformationForm> {
               ),
               SizedBox(height: 20),
               Text(
-                AppLocalizations.of(context)!.aboutUs,
+                AppLocalizations.of(context)!.medicalInformation,
                 style: AppTheme.of(context).typography.subtitle1,
               ),
               // Wrap "Medical Information" fields in a single Card
