@@ -1,0 +1,140 @@
+import functions_framework
+from flask import jsonify, request
+import cohere
+import vertexai
+import base64
+from vertexai.generative_models import GenerativeModel, Part, FinishReason
+import vertexai.preview.generative_models as generative_models
+from google.cloud import secretmanager
+from google.cloud import translate_v2 as translate
+
+
+# Initialize the Cohere and Vertex AI clients with API keys and model details
+cohere_api_key = get_cohere_api_key()
+co = cohere.Client(cohere_api_key)
+
+# Initialize Vertex AI and Translate Client
+vertexai.init(project="****-****", location="us-central1")
+model = GenerativeModel("gemini-1.5-pro-preview-0409")
+translate_client = translate.Client()
+
+# Function to translate text using Google Translate API
+def translate_text(target: str, text: str) -> str:
+    if isinstance(text, bytes):
+        text = text.decode("utf-8")
+    result = translate_client.translate(text, target_language=target)
+    return result['translatedText']
+
+
+# HTTP function to handle chatbot interactions
+@functions_framework.http
+def chatbot(request):
+    request_json = request.get_json(silent=True)
+
+    if not request_json or 'user_message' not in request_json or 'convo_id' not in request_json:
+        return jsonify({"error": "Missing required parameters"}), 400
+
+    # Retrieve message details and user information from request
+    user_message = request_json['user_message']
+    convo_id = request_json['convo_id']
+    tenant_id = request_json['tenant_id']
+    user_info = request_json.get('user_info', '')
+    language = request_json.get('language', 'en')  # Default to English if not specified
+
+    # Optional: processing of an image provided in base64 format
+    image_base64 = request_json.get('image_base64')
+    image_info = ""
+      if image_base64:
+        image_info = process_image(image_base64)
+        message_parts.append(f"## User attached Image Description:\n{image_info}\n")
+
+    # Prepare the preamble and message for the Cohere conversation
+    preamble = '''
+## Task & Context
+
+You are a professional nutritionist who gives personalized responses to queries asked by a user when given their profile
+You MUST consider EVERY RESTRICTION AND DIETARY LIFESTYLES THEY HAVE EVERYTIME you give a response - DO NOT only consider one, but every restriction and info about them together and how they would play together.
+Whenever you are given an image description you must know that Its a description of a picture taken by the user and query asked by them about the picture. The picture may be a food item, a nutritional facts label, a menu or even a picture of a fridge. Respond to the user query well and ensure every ingredient and their condition is considered
+## Style Guide
+
+Ensure you respond to the query so user has a definitive answer before moving on to an explaination or any nuances in the response
+Respond in an ACCURATE and VERY CONCISE yet effective manner so it’s easy to read and understand and ensure that user understands the nuances etc.
+Please ensure you respond with at most 3 sectences otherwise it may be too overwhelming for the user to read
+'''
+
+    message_parts = [f"## USER INFO:\n{user_info}\n"]
+    message_parts.append(f"## USER QUERY:\n{user_message}")
+    final_message = "\n".join(message_parts)
+
+    # Communicate with Cohere API to generate the chat response
+    response = co.chat(
+        model='command-r',
+        message=final_message,
+        temperature=0.1,
+        conversation_id=convo_id,
+        prompt_truncation='auto',
+        preamble=preamble,
+        connectors=[{"id":"web-search"}]
+    )
+
+
+    # Extract and prepare documents for the JSON response
+    if response.documents:
+        documents = [
+            {'title':doc['title'],
+                'url': doc['url']
+            } for doc in response.documents
+        ]
+    else:
+        documents = []
+    translated_response = translate_text(language, response.text) if language != 'en' else response.text
+
+    return jsonify({
+        'response': translated_response,
+        'documents': documents,
+        'image_info': image_info
+    })
+
+
+
+# Function to process and describe an image received in base64 format             
+def process_image(base64_string):
+    # Decode the base64 image
+    image_data = base64.b64decode(base64_string)
+    image_part = Part.from_data(
+        mime_type="image/png",
+        data=image_data
+    )
+
+    text_part = """Describe the image in a detailed and organized manner ONLY FOCUS on consumable items or food labels or menus or ingredients (Please be CONCISE yet accurate and efficient with the information)
+If the image contains picture of a food item or product item then be as accurate and detailed as possible on the possible ingredients that would be present in the food item or nutritional info for that item
+If the image contains a product with a nutritional facts label, then mention all the details, ingredients and the insights you see on the label e.g 'High in carbs'
+If the image contains the picture of a fridge - organize and write down all the products you see and around how much you see of each product (e.g two eggs) be as accurate as you can be. 
+Do not focus on unnecessary backgrounds and keep focused on any food products, labels, menu list, ingredients etc that you see (anything food related)
+Do NOT make up stuff that you do not see and Do NOT include names of products, brands or manufacturers, you should generally describe products as 'Corn Puff Chips' etc and not 'Yovok Chips'
+Focus on possible ingredients, nutritional information and consumable aspects in the image"""
+
+    generation_config = {
+        "max_output_tokens": 8192,
+        "temperature": 0.1,
+        "top_p": 0.95
+    }
+
+    safety_settings = {
+      generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      generative_models.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      generative_models.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      generative_models.HarmCategory.HARM_CATEGORY_HARASSMENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+    }
+    responses = model.generate_content(
+        [image_part, text_part],
+        generation_config=generation_config,
+        safety_settings=safety_settings,
+        stream=True
+    )
+
+    image_info = ""
+    for response in responses:
+        image_info += response.text
+
+    return image_info
