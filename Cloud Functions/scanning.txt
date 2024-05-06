@@ -1,0 +1,140 @@
+import functions_framework
+from flask import jsonify, request
+import cohere
+import vertexai
+import base64
+from vertexai.generative_models import GenerativeModel, Part, FinishReason
+import vertexai.preview.generative_models as generative_models
+from google.cloud import translate_v2 as translate
+
+cohere_api_key = get_cohere_api_key()
+co = cohere.Client(cohere_api_key)
+# Initialize Vertex AI
+vertexai.init(project="****-****", location="us-central1")
+model = GenerativeModel("gemini-1.5-pro-preview-0409")
+translate_client = translate.Client()
+
+# Function to translate text using Google Translate API
+def translate_text(target: str, text: str) -> str:
+    if isinstance(text, bytes):
+        text = text.decode("utf-8")
+    result = translate_client.translate(text, target_language=target)
+    return result['translatedText']
+
+
+# Main API endpoint function to process image and text data    
+@functions_framework.http
+def scanner(request):
+    request_json = request.get_json(silent=True)
+    if not request_json or 'image_base64' not in request_json:
+        return jsonify({"error": "Missing required parameters"}), 400
+
+# Extract and default the needed parameters from the request
+    convo_id = request_json.get('convo_id', '')
+    user_info = request_json.get('user_info', 'User wishes to remain healthy')
+    language = request_json.get('language', 'en')  # Default to English if not specified
+    image_base64 = request_json.get('image_base64')
+
+
+
+# Chat with Cohere model to get the main response and summary
+    preamble = '''
+## Task & Context
+You are a professional nutritionist who gives personalized responses to queries asked by a user when given their profile and an image that they have attached
+You MUST consider EVERY RESTRICTION AND DIETARY LIFESTYLES THEY HAVE EVERYTIME you give a response - DO NOT only consider one, but every restriction and info about them together and how they would play together.
+## Style Guide
+Ensure you respond to the query so user has a definitive answer before moving on to an explaination or any nuances in the response
+Respond in an ACCURATE yet effective manner so it’s easy to read and understand and ensure that user understands the essence and nuances etc.
+Respond as if you are talking to the user
+'''
+    image_info = ""
+    message_parts = [f"## USER INFO:\n{user_info}\n"]
+    if image_base64:
+        image_info = process_image(image_base64)
+        message_parts.append(f"## User attached Image Description:\n{image_info}\n")
+    message_parts.append("""
+    ## TASK: 
+    You are given an image description of an image attached by the user - \n
+    -If it a product, let the user know if that product is good for them to consume and ensure you give a well cited answer \n
+    -If the picture is that of a fridge then help the user decide what to make using ONLY the ingredients available. maybe give suggestions for meals using the products the user has in the fridge and give advice regarding their fridge stock \n
+    -If the picture is that of a menu or ingredients list then help the user decide what to get and what would be suitable for them \n
+    -If the picture is not related to any food related task then firmly yet kindly steer the user back to any conversation about food related items \n\n
+  
+  Give a definitive conversational response and dont keep things vague. Respond with around 2-3 sentencesa
+  """
+  )
+    final_message = "\n".join(message_parts)
+    response = co.chat(
+        model='command-r',
+        message=final_message,
+        temperature=0.1,
+        conversation_id=convo_id,
+        prompt_truncation='auto',
+        preamble=preamble,
+        connectors=[{"id":"web-search"}]
+    )
+    summary_prompt = f"## ADVICE: {response.text} \n\n ## TASK:  Condense this advice into a sentence thats extremely CONCISE and summarized actionable and personalized advice or title to be displayed to the user at the top based on the advice provided to you e.g if the advice suggests not to eat the food return something like: `This food may not be the best for you` so it is easy to get a quick answer that feels like its personalized and conversation (MAX 10 WORDS) ## STYLE GUIDE: \n Respond as if you are talking to the user like 'This isnt too good for you' and be kind and positive \n IMPORTANT: ONLY RESPOND WITH THE MESSAGE AS IT WILL IMMEDIETLY BE SHOWN TO THE USER DO NOT USE  `How about:?` "
+    
+    summary = co.chat(
+        model='command-r',
+        message=summary_prompt,
+        temperature=0.1,
+    )
+
+
+    
+    # Prepare the JSON response with documents, translations, and summaries
+    if response.documents:
+        documents = [
+            {
+                'url': doc['url']
+            } for doc in response.documents
+        ]
+    else:
+        documents = []
+    translated_response = translate_text(language, response.text) if language != 'en' else response.text
+    translated_summary = translate_text(language, summary.text) if language != 'en' else summary.text
+
+    return jsonify({
+        'response': translated_response,
+        'documents': documents,
+        'image_info': image_info,
+        'summary': translated_summary
+    })
+
+
+# Helper function to process image data using gemini from base64 encoding
+def process_image(base64_string):
+    # Decode the base64 image
+    image_data = base64.b64decode(base64_string)
+    image_part = Part.from_data(
+        mime_type="image/png",
+        data=image_data
+    )
+    text_part = """Describe the image in a detailed and organized manner ONLY FOCUS on consumable items or food labels or menus or ingredients
+If the image contains a product with a nutritional facts label, then list all insights in detail
+If the image contains the picture of a fridge - organize and write down all the products you see and how much you see of each product (e.g two eggs) be as detailed and accurate as you can be. 
+If the image contains picture of a food item then be as accurate and as detailed as possible on the possible ingredients/products of the food item
+Do not focus on unnecessary backgrounds and keep focused on any food products, labels, menu list, ingredients etc that you see (anything food related)
+Do not make up stuff that you do not see """
+    generation_config = {
+        "max_output_tokens": 8192,
+        "temperature": 0.1,
+        "top_p": 0.95
+    }
+    safety_settings = {
+      generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      generative_models.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      generative_models.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      generative_models.HarmCategory.HARM_CATEGORY_HARASSMENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+    }
+    responses = model.generate_content(
+        [image_part, text_part],
+        generation_config=generation_config,
+        safety_settings=safety_settings,
+        stream=True
+    )
+    image_info = ""
+    for response in responses:
+        image_info += response.text
+    return image_info
