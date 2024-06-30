@@ -6,6 +6,7 @@ Find more about BYTE, watch tutorial video and download APK here: https://byte-a
 Note: only available for Android devices currently
 
 Demo video (1 min): https://youtu.be/5hlkNOqAejk
+
 Longer video (2 mins): https://drive.google.com/file/d/1dpZpletm2pCn_Yz4FDHCueIINXEvsD7_/view?usp=drivesdk
 
 ## Project Setup
