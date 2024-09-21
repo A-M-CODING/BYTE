@@ -1,7 +1,5 @@
 # BYTE
 
-## NOTE: Currently, our Google Cloud Free Trial has expired (as three months have passed since we started developing the app) hence most of the APIs in the app are not functional. We are working on purchasing credits or exploring alternate deployment options to get the app back up.
-
 Cohere RAG Hackathon Winner/Google Solutions '24 Top 10
 
 _Nutritionist in your pocket_
